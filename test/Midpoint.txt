@@ -1,0 +1,36 @@
+
+process PROD = {
+
+	source = PoolInputService { 
+	       string fileName = "CaloTowers.root"
+	       int32 MaxEvents = -1
+	}
+
+	module out = PoolOutputModule {
+	       string fileName = "MidpointJets.root"
+        }
+
+	module mcone5 =  MidpointJetProducer {
+	       	untracked int32 debugLevel = 0 
+		double seedThreshold = 3.0 
+		double towerThreshold = 1.0
+		double coneRadius = 0.5 
+		double coneAreaFraction = 1.0
+		int32 maxPairSize = 2
+		int32 maxIterations = 100
+		double overlapThreshold = .75 
+	}
+
+	module mcone7 =  MidpointJetProducer {
+	       	untracked int32 debugLevel = 0 
+		double seedThreshold = 3.0 
+		double towerThreshold = 1.0
+		double coneRadius = 0.7 
+		double coneAreaFraction = 1.0
+		int32 maxPairSize = 2
+		int32 maxIterations = 100
+		double overlapThreshold = .75 
+	}
+
+	path p = { mcone5, mcone7, out }
+}

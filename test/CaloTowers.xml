@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!-- Edited By POOL -->
+<!DOCTYPE POOLFILECATALOG SYSTEM "InMemory">
+<POOLFILECATALOG>
+
+  <File ID="04EAC4DC-23BC-D911-88FA-000423472016">
+    <physical>
+      <pfn filetype="ROOT_All" name="CaloTowers.root"/>
+    </physical>
+    <logical/>
+  </File>
+
+</POOLFILECATALOG>

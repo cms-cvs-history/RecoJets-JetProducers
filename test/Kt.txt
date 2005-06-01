@@ -1,0 +1,21 @@
+
+process PROD  = {
+
+	source = PoolInputService { 
+		string fileName = "CaloTowers.root"
+		int32 MaxEvents = -1
+	}
+
+	module out = PoolOutputModule {	
+		string fileName = "KtJets.root"
+	}
+
+	module angle2recomlecut0rl = KtJetProducer {
+	       int32 ktAngle = 2
+	       int32 ktRecom = 1
+	       double ktECut = 0.0
+	       double ktRParam = 1.0
+	}
+
+	path p = { angle2recomlecut0rl, out }
+}
