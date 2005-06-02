@@ -2,12 +2,12 @@
 process PROD = {
 
 	source = PoolInputService { 
-	       string fileName = "CaloTowers.root"
-	       int32 MaxEvents = -1
+	       untracked string fileName = "CaloTowers.root"
+	       untracked int32 maxEvents = -1
 	}
 
 	module out = PoolOutputModule {
-	       string fileName = "MidpointJets.root"
+	       untracked string fileName = "MidpointJets.root"
         }
 
 	module mcone5 =  MidpointJetProducer {
