@@ -8,13 +8,16 @@ process PROD  = {
 
 	module out = PoolOutputModule {	
 		untracked string fileName = "KtJets.root"
+		untracked bool keepOnlySpecifiedProducts = false
+		untracked vstring skipProducts = {}
+
 	}
 
 	module angle2recomlecut0rl = KtJetProducer {
-	       int32 ktAngle = 2
-	       int32 ktRecom = 1
-	       double ktECut = 10.0
-	       double ktRParam = 1.0
+		int32 ktAngle = 2
+		int32 ktRecom = 1
+		double ktECut = 10.0
+		double ktRParam = 1.0
 	}
 
 	path p = { angle2recomlecut0rl, out }

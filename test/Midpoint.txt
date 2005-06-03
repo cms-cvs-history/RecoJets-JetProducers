@@ -8,6 +8,8 @@ process PROD = {
 
 	module out = PoolOutputModule {
 	       untracked string fileName = "MidpointJets.root"
+               untracked bool keepOnlySpecifiedProducts = false
+               untracked vstring skipProducts = {}
         }
 
 	module mcone5 =  MidpointJetProducer {
