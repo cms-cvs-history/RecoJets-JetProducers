@@ -2,12 +2,12 @@
 process PROD = {
 
 	source = PoolInputService { 
-	       untracked string fileName = "CaloTowers.root"
+	       untracked string fileName = 'CaloTowers.root'
 	       untracked int32 maxEvents = -1
 	}
 
 	module out = PoolOutputModule {
-	       untracked string fileName = "MidpointJets.root"
+	       untracked string fileName = 'MidpointJets.root'
                untracked bool keepOnlySpecifiedProducts = false
                untracked vstring skipProducts = {}
         }
