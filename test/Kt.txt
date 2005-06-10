@@ -8,9 +8,6 @@ process PROD  = {
 
 	module out = PoolOutputModule {	
 		untracked string fileName = 'KtJets.root'
-		untracked bool keepOnlySpecifiedProducts = false
-		untracked vstring skipProducts = {}
-
 	}
 
 	module angle2recomlecut0rl = KtJetProducer {
