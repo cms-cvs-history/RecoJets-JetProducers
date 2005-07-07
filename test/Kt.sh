@@ -4,4 +4,4 @@ rm -f KtJets.root
 
 cp CaloTowers.xml PoolFileCatalog.xml
 
-Mange --parameter-set Kt.txt
+cmsRun --parameter-set Kt.txt
