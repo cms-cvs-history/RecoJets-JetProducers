@@ -1,7 +1,7 @@
 
 process PROD = {
 
-	source = PoolInputService { 
+	source = PoolSource { 
 	       untracked string fileName = 'CaloTowers.root'
 	       untracked int32 maxEvents = -1
 	}
