@@ -3,7 +3,7 @@
 <!DOCTYPE POOLFILECATALOG SYSTEM "InMemory">
 <POOLFILECATALOG>
 
-  <File ID="BE8CADD3-601A-DA11-884B-000423472016">
+  <File ID="52593CB5-8934-DA11-846E-000423472016">
     <physical>
       <pfn filetype="ROOT_All" name="CaloTowers.root"/>
     </physical>
