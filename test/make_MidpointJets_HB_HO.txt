@@ -1,0 +1,24 @@
+process PROD  = {
+
+	source = PoolSource { 
+		untracked string fileName = 'CaloTowers_HB_HO.root' 
+		untracked int32 maxEvents = -1            
+	}
+        module out = PoolOutputModule {
+                 untracked string fileName = 'MidpointJets_HB_HO.root'
+        }
+	
+        module mcone5 =  MidpointJetProducer {
+                untracked int32 debugLevel = 1
+                double seedThreshold = 3.0
+                double towerThreshold = 1.0
+                double coneRadius = 0.5
+                double coneAreaFraction = 1.0
+                int32 maxPairSize = 2
+                int32 maxIterations = 100
+                double overlapThreshold = .75
+        }
+  
+	path p = { mcone5, out}
+
+}
