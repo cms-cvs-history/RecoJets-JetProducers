@@ -8,17 +8,26 @@ process PROD  = {
                  untracked string fileName = 'MidpointJets_HB_HO.root'
         }
 	
-        module mcone5 =  MidpointJetProducer {
+        block common_jet_parameters = {
                 untracked int32 debugLevel = 1
                 double seedThreshold = 3.0
                 double towerThreshold = 1.0
-                double coneRadius = 0.5
                 double coneAreaFraction = 1.0
                 int32 maxPairSize = 2
                 int32 maxIterations = 100
                 double overlapThreshold = .75
+	}
+	        
+        module mcone5 =  MidpointJetProducer {
+                using common_jet_parameters
+                double coneRadius = 0.5
         }
   
-	path p = { mcone5, out}
+        module mcone7 =  MidpointJetProducer {
+                using common_jet_parameters
+                double coneRadius = 0.7
+        }
+
+	path p = { mcone5, mcone7, out}
 
 }
