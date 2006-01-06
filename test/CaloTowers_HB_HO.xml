@@ -3,9 +3,9 @@
 <!DOCTYPE POOLFILECATALOG SYSTEM "InMemory">
 <POOLFILECATALOG>
 
-  <File ID="5A359A15-E540-DA11-8B71-000CF1AE968D">
+  <File ID="5856C8D1-017F-DA11-929B-000CF1AE968D">
     <physical>
-      <pfn filetype="ROOT_All" name="CaloTowers_HB_HO.root"/>
+      <pfn filetype="ROOT_All" name="file:CaloTowers_HB_HO.root"/>
     </physical>
     <logical/>
   </File>
