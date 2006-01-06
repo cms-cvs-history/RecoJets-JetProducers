@@ -1,13 +1,18 @@
 process PROD  = {
 
+        # Input file is a testbeam source file, at Fermilab, with 300 GeV pions and LED flashers.
+        # Its a big file, we will only use 100 events for this test.
 	source = HcalTBSource { 
 		untracked vstring fileNames = { '/uscms_data/d1/jmmans/tutorial_data/HTB_011609.root' }
 		untracked int32 maxEvents = 100
                 untracked vstring streams = { 'HCAL_DCC020:20' }
 	}
+
+        # Output file that contains CaloTowers.
         module out = PoolOutputModule {
                  untracked string fileName = 'CaloTowers_HB_HO.root'
         }
+
 	module unpacker = HcalRawToDigi {
                 untracked int32 firstSample = 6
                 untracked int32 lastSample = 15
@@ -41,16 +46,26 @@ process PROD  = {
 
         module dumper = HcalRecHitDump { }
 
+        # Parameters for making CaloTowers.
+	# The thresholds with the comment Scheme B are for noise reduction 
+	# and come from scheme B in CMS AN 2005/039 and Physics TDR Volume 1.
 	module towermaker = CaloTowersCreator {
-           double EBThreshold = 0.1 // GeV
-           double EEThreshold = 0.1 // GeV
-           double HcalThreshold = 0.1 // GeV
-           double HBThreshold = 0.1 // GeV
-           double HESThreshold = 0.1 // GeV
-           double HEDThreshold = 0.1 // GeV
-           double HOThreshold = 0.1 // GeV
-           double HF1Threshold = 0.1 // GeV
-           double HF2Threshold = 0.1 // GeV
+           double HBThreshold = 0.9     // GeV, Scheme B
+           double HOThreshold = 1.1     // GeV, Scheme B
+           double HESThreshold = 1.4    // GeV, Scheme B
+           double HEDThreshold = 1.4    // GeV, Scheme B
+           double HF1Threshold = 0.5    // GeV, ORCA value
+           double HF2Threshold = 0.5    // GeV, ORCA value
+
+           double EBThreshold = -1000   // GeV, -1000 means cut not used
+           double EEThreshold = -1000   // GeV, -1000 means cut not used
+
+	   double EBSumThreshold = 0.2  // GeV, Scheme B
+	   double EESumThreshold = 0.45 // GeV, Scheme B
+
+           double HcalThreshold = -1000 // GeV, -1000 means cut not used 
+	   double EcutTower = -1000     // GeV, -1000 means cut not used
+
 	   double EBWeight = 1.0
 	   double EEWeight = 1.0
 	   double HBWeight = 1.0
@@ -59,19 +74,14 @@ process PROD  = {
 	   double HOWeight = 1.0
 	   double HF1Weight = 1.0
 	   double HF2Weight = 1.0
-	   double EcutTower = 0.2 // GeV
-	   double EBSumThreshold = 0.1 // GeV
-	   double EESumThreshold = 0.1 // GeV
 	   bool UseHO = true
         }
 
 	module dumper_ct = CaloTowersDump  { }
-
-	es_source = XMLIdealGeometryESSource {
-	   #string GeometryConfiguration = 'file:///afs/cern.ch/cms/Releases/CMSSW/CMSSW_0_2_0/src/VisDocumentation/VisTutorial/TESTconfiguration.xml'
-	   FileInPath GeometryConfiguration = 'GeometryReaders/DBIdealGeometryESSource/test/SpecsConfiguration.xml'
-           string rootNodeName = ''
-}
+        es_source = XMLIdealGeometryESSource {
+               FileInPath GeometryConfiguration = 'Geometry/CMSCommonData/data/configuration.xml'
+               string rootNodeName = 'cms:OCMS'
+        }
 
         es_module = HcalHardcodeGeometryEP {}
         es_module = CaloTowerHardcodeGeometryEP {}
