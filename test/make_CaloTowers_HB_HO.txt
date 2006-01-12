@@ -57,9 +57,9 @@ process PROD  = {
            double HF1Threshold = 0.5    // GeV, ORCA value
            double HF2Threshold = 0.5    // GeV, ORCA value
 
-           double EBThreshold = -1000   // GeV, -1000 means cut not used
-           double EEThreshold = -1000   // GeV, -1000 means cut not used
-
+           double EBThreshold = 0.09    // GeV, ORCA value w/o selective readout
+           double EEThreshold = 0.45    // GeV, ORCA value w/o selective readout
+	   
 	   double EBSumThreshold = 0.2  // GeV, Scheme B
 	   double EESumThreshold = 0.45 // GeV, Scheme B
 
