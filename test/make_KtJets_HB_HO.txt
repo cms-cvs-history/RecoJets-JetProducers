@@ -1,0 +1,22 @@
+process PROD  = {
+
+	source = PoolSource { 
+		untracked string fileName = 'CaloTowers_HB_HO.root' 
+		untracked int32 maxEvents = -1            
+	}
+        module out = PoolOutputModule {
+                 untracked string fileName = 'KtJets_HB_HO.root'
+        }
+	
+	        
+        module ktjet =  KtJetProducer {
+                int32 ktAngle = 2
+                int32 ktRecom = 1
+                double ktECut = 1.0
+                double ktRParam = 1.0
+         }
+  
+
+	path p = { ktjet, out}
+
+}
