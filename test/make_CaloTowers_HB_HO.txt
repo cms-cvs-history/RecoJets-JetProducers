@@ -26,19 +26,19 @@ process PROD  = {
 		untracked string readoutMapSource = 'file:///uscms_data/d1/jmmans/tutorial_data/maps/hbho_ring12_tb04.txt'
 	}
 
-	module reco_hbhe = HcalSimpleReconstructor {
+	module recohbhe = HcalSimpleReconstructor {
 	       untracked int32 firstSample = 4
 	       untracked int32 samplesToAdd = 4
 	       untracked string Subdetector = 'HBHE'
 	}
 
-	module reco_ho = HcalSimpleReconstructor {
+	module recoho = HcalSimpleReconstructor {
 	       untracked int32 firstSample = 4
 	       untracked int32 samplesToAdd = 4
 	       untracked string Subdetector = 'HO'
 	}
 
-	module reco_hf = HcalSimpleReconstructor {
+	module recohf = HcalSimpleReconstructor {
 	       untracked int32 firstSample = 4
 	       untracked int32 samplesToAdd = 3
 	       untracked string Subdetector = 'HF'
@@ -77,7 +77,7 @@ process PROD  = {
 	   bool UseHO = true
         }
 
-	module dumper_ct = CaloTowersDump  { }
+	module dumperct = CaloTowersDump  { }
         es_source = XMLIdealGeometryESSource {
                FileInPath GeometryConfiguration = 'Geometry/CMSCommonData/data/configuration.xml'
                string rootNodeName = 'cms:OCMS'
@@ -88,7 +88,7 @@ process PROD  = {
 	es_module = CaloGeometryBuilder {}
 	es_module = EcalBarrelGeometryEP {}
 
-	path p = { unpacker, reco_ho, reco_hbhe, reco_hf, towermaker, dumper, dumper_ct, out}
+	path p = { unpacker, recoho, recohbhe, recohf, towermaker, dumper, dumperct, out}
 
 	es_module = HcalDbProducer {}
 
