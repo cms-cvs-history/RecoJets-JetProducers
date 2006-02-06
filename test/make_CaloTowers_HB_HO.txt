@@ -23,7 +23,6 @@ process PROD  = {
 		untracked int32 FilterAmpBegin = 4
 		untracked int32 FilterAmpEnd = 7
 		untracked double FilterAmpLevel = 22.0
-		untracked string readoutMapSource = 'file:///uscms_data/d1/jmmans/tutorial_data/maps/hbho_ring12_tb04.txt'
 	}
 
 	module recohbhe = HcalSimpleReconstructor {
@@ -92,5 +91,14 @@ process PROD  = {
 
 	es_module = HcalDbProducer {}
 
-        es_source es_hardcode = HcalHardcodeCalibrations {untracked vstring toGet = {"Pedestals", "PedestalWidths", "Gains", "GainWidths", "QIEShape", "QIEData", "channelQuality", "electronicsMap"}}
+        es_source es_hardcode = HcalHardcodeCalibrations {untracked vstring toGet = {"Pedestals", "PedestalWidths", "Gains", "GainWidths", "QIEShape", "QIEData", "channelQuality"}}
+	
+	es_source es_ascii = HcalTextCalibrations { VPSet input = {
+                                              {string object = "ElectronicsMap"
+                                               string file = "/uscms_data/d1/jmmans/tutorial_data/maps/hbho_ring12_tb04.txt"
+                                              }
+                }
+        }
+
+
 }
