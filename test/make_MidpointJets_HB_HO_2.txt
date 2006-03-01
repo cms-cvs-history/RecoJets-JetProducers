@@ -1,0 +1,39 @@
+process PROD  = {
+
+	source = PoolSource { 
+		untracked string fileName = 'CaloTowers_HB_HO.root' 
+		untracked int32 maxEvents = -1            
+	}
+        module out = PoolOutputModule {
+                 untracked string fileName = 'MidpointJets_HB_HO_2.root'
+        }
+	
+        module caloTowers = CaloTowerCandidateProducer {
+            string src = "towermaker"
+        }
+
+        block common_jet_parameters = {
+                untracked int32 debugLevel = 1
+                double seedThreshold = 3.0
+                double towerThreshold = 1.0
+                double coneAreaFraction = 1.0
+                int32 maxPairSize = 2
+                int32 maxIterations = 100
+                double overlapThreshold = .75
+	}
+	        
+        module mcone5 =  MidpointJetProducer2 {
+                string src = "caloTowers"
+                using common_jet_parameters
+                double coneRadius = 0.5
+        }
+  
+        module mcone7 =  MidpointJetProducer2 {
+                string src = "caloTowers"
+                using common_jet_parameters
+                double coneRadius = 0.7
+        }
+
+	path p = { caloTowers, mcone5, mcone7, out}
+
+}
