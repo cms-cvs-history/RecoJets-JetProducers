@@ -8,8 +8,12 @@ process PROD  = {
                  untracked string fileName = 'KtJets_HB_HO.root'
         }
 	
-	        
+        module caloTowers = CaloTowerCandidateProducer {
+            string src = "towermaker"
+        }
+
         module ktjet =  KtJetProducer {
+                string src = "caloTowers"
                 int32 ktAngle = 2
                 int32 ktRecom = 1
                 double ktECut = 1.0
@@ -17,6 +21,6 @@ process PROD  = {
          }
   
 
-	path p = { ktjet, out}
+	path p = { caloTowers, ktjet, out}
 
 }
