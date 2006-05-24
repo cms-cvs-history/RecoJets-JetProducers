@@ -1,0 +1,9 @@
+# Standard Iterative Cone Jets parameters
+# $Id
+
+block IconeJetParameters = {
+       untracked int32 debugLevel = 0
+       double seedThreshold = 1.0
+       double towerThreshold = 0.5
+}
+

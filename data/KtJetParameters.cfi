@@ -1,0 +1,8 @@
+# Standard kT jets parameters
+# $Id$
+
+block KtJetParameters = {
+       int32 ktAngle = 2
+       double ktECut = 1.0
+       double ktRParam = 1.0
+}

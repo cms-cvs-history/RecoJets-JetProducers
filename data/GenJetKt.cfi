@@ -1,0 +1,10 @@
+# kT GenJets
+# $Id$
+
+include "RecoJets/JetProducers/data/KtJetParameters.cfi"
+
+module GenJetKt = KtJetProducer {
+       using KtJetParameters
+       string src = "genCandidates"
+       untracked string jetType = "GenJet"
+}

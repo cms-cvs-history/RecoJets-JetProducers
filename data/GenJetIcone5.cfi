@@ -1,0 +1,11 @@
+# Iterative cone 0.5 GenJets
+# $Id$
+
+include "RecoJets/JetProducers/data/IconeJetParameters.cfi"
+
+module GenJetIcone5 = IterativeConeJetProducer {
+       using IconeJetParameters
+       double coneRadius = 0.5
+       string src = "genCandidates"
+       untracked string jetType = "GenJet"
+}

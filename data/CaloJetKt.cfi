@@ -1,0 +1,10 @@
+# kT CaloJets
+# $Id$
+
+include "RecoJets/JetProducers/data/KtJetParameters.cfi"
+
+module CaloJetKt = KtJetProducer {
+       using KtJetParameters
+       string src = "caloTowers"
+       untracked string jetType = "CaloJet"
+}
