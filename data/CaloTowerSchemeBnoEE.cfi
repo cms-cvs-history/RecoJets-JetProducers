@@ -1,0 +1,29 @@
+   module towermaker = CaloTowersCreator {
+      double HBThreshold = 0.9     // GeV, Scheme B
+      double HOThreshold = 1.1     // GeV, Scheme B
+      double HESThreshold = 1.4    // GeV, Scheme B
+      double HEDThreshold = 1.4    // GeV, Scheme B
+      double HF1Threshold = 0.5    // GeV, ORCA value
+      double HF2Threshold = 0.5    // GeV, ORCA value
+      double EBThreshold = 0.09    // GeV, ORCA value w/o selective readout
+      double EEThreshold = 0.45    // GeV, ORCA value w/o selective readout
+      
+      double EBSumThreshold = 0.2  // GeV, Scheme B
+      double EESumThreshold = 0.45 // GeV, Scheme B
+      double HcalThreshold = -1000 // GeV, -1000 means cut not used 
+      double EcutTower = -1000     // GeV, -1000 means cut not used
+      double EBWeight = 1.0
+      double EEWeight = 1.0
+      double HBWeight = 1.0
+      double HESWeight = 1.0
+      double HEDWeight = 1.0
+      double HOWeight = 1.0
+      double HF1Weight = 1.0
+      double HF2Weight = 1.0
+      bool UseHO = true
+      string hbheInput = "recohbhe"
+      string hoInput = "recoho"
+      string hfInput = "recohf"
+      vstring ecalInputs = {"ecalrechit/EcalRecHitsEB"}
+      untracked bool AllowMissingInputs = true
+   }
