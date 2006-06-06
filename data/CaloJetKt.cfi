@@ -1,10 +1,11 @@
 # kT CaloJets
-# $Id$
+# $Id: CaloJetKt.cfi,v 1.1 2006/05/24 00:31:35 fedor Exp $
 
 include "RecoJets/JetProducers/data/KtJetParameters.cfi"
 
 module CaloJetKt = KtJetProducer {
        using KtJetParameters
+       double ktECut = 1.0
        string src = "caloTowers"
        untracked string jetType = "CaloJet"
 }

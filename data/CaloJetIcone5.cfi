@@ -1,10 +1,11 @@
 # Midpoint cone 0.5 CaloJets
-# $Id$
+# $Id: CaloJetIcone5.cfi,v 1.1 2006/05/24 00:31:35 fedor Exp $
 
 include "RecoJets/JetProducers/data/IconeJetParameters.cfi"
 
 module CaloJetIcone5 = IterativeConeJetProducer {
        using IconeJetParameters
+       double towerThreshold = 0.5       
        double coneRadius = 0.5
        string src = "caloTowers"
        untracked string jetType = "CaloJet"

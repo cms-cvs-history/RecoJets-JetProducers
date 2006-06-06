@@ -1,8 +1,7 @@
 # Standard kT jets parameters
-# $Id$
+# $Id: KtJetParameters.cfi,v 1.1 2006/05/24 00:31:35 fedor Exp $
 
 block KtJetParameters = {
        int32 ktAngle = 2
-       double ktECut = 1.0
        double ktRParam = 1.0
 }

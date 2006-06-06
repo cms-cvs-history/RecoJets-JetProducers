@@ -4,7 +4,6 @@
 block MconeJetParameters = {
        untracked int32 debugLevel = 0
        double seedThreshold = 1.0
-       double towerThreshold = 0.5
        double coneAreaFraction = 1.0
        int32 maxPairSize = 2
        int32 maxIterations = 100
