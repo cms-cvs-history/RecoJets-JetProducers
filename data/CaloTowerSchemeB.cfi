@@ -1,4 +1,4 @@
-   module towermaker = CaloTowersCreator {
+   module calotowermaker = CaloTowersCreator {
       double HBThreshold = 0.9     // GeV, Scheme B
       double HOThreshold = 1.1     // GeV, Scheme B
       double HESThreshold = 1.4    // GeV, Scheme B
