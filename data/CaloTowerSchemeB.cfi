@@ -1,4 +1,4 @@
-   module calotowermaker = CaloTowersCreator {
+   module towermaker = CaloTowersCreator {
       double HBThreshold = 0.9     // GeV, Scheme B
       double HOThreshold = 1.1     // GeV, Scheme B
       double HESThreshold = 1.4    // GeV, Scheme B
@@ -21,9 +21,9 @@
       double HF1Weight = 1.0
       double HF2Weight = 1.0
       bool UseHO = true
-      string hbheInput = "recohbhe"
-      string hoInput = "recoho"
-      string hfInput = "recohf"
+      string hbheInput = "hbhereco"
+      string hoInput = "horeco"
+      string hfInput = "hfreco"
       vstring ecalInputs = {"ecalrechit/EcalRecHitsEB", "ecalrechit/EcalRecHitsEE" }
-      untracked bool AllowMissingInputs = true
+      untracked bool AllowMissingInputs = false
    }
