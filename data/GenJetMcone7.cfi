@@ -1,9 +1,9 @@
 # Midpoint cone 0.7 GenJets
-# $Id: GenJetMcone7.cfi,v 1.1 2006/05/24 00:31:35 fedor Exp $
+# $Id: GenJetMcone7.cfi,v 1.2 2006/06/06 17:19:09 rharris Exp $
 
 include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
 
-module GenJetMcone7 = MidpointJetProducer {
+module midPointCone7GenJets = MidpointJetProducer {
        using MconeJetParameters
        # Here tower threshold is particle Et threshold
        double towerThreshold = 0.0       
