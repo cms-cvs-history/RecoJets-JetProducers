@@ -21,9 +21,9 @@
       double HF1Weight = 1.0
       double HF2Weight = 1.0
       bool UseHO = true
-      string hbheInput = "hbhereco"
-      string hoInput = "horeco"
-      string hfInput = "hfreco"
-      vstring ecalInputs = {"ecalRecHit/EcalRecHitsEB", "ecalRecHit/EcalRecHitsEE" }
+      InputTag hbheInput = hbhereco
+      InputTag hoInput = horeco
+      InputTag hfInput = hfreco
+      VInputTag ecalInputs = { ecalRecHit:EcalRecHitsEB, ecalRecHit:EcalRecHitsEE }
       untracked bool AllowMissingInputs = false
    }
