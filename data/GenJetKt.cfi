@@ -1,11 +1,11 @@
 # kT GenJets
-# $Id: GenJetKt.cfi,v 1.2 2006/06/06 17:19:09 rharris Exp $
+# $Id: GenJetKt.cfi,v 1.3 2006/08/01 15:28:44 kati Exp $
 
 include "RecoJets/JetProducers/data/KtJetParameters.cfi"
 
 module ktGenJets = KtJetProducer {
        using KtJetParameters
        double ktECut = 0.0
-       string src = "genCandidates"
+       InputTag src = genCandidates
        untracked string jetType = "GenJet"
 }

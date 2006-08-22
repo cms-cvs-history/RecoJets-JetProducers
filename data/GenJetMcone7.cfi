@@ -1,5 +1,5 @@
 # Midpoint cone 0.7 GenJets
-# $Id: GenJetMcone7.cfi,v 1.2 2006/06/06 17:19:09 rharris Exp $
+# $Id: GenJetMcone7.cfi,v 1.3 2006/08/01 15:28:44 kati Exp $
 
 include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
 
@@ -8,7 +8,7 @@ module midPointCone7GenJets = MidpointJetProducer {
        # Here tower threshold is particle Et threshold
        double towerThreshold = 0.0       
        double coneRadius = 0.7
-       string src = "genCandidates"
+       InputTag src = genCandidates
        untracked string jetType = "GenJet"
 }
 

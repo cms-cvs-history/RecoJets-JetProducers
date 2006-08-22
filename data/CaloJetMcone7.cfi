@@ -1,5 +1,5 @@
 # Midpoint cone 0.7 CaloJets
-# $Id: CaloJetMcone7.cfi,v 1.2 2006/06/06 17:19:09 rharris Exp $
+# $Id: CaloJetMcone7.cfi,v 1.3 2006/08/01 15:28:44 kati Exp $
 
 include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
 
@@ -7,6 +7,6 @@ module midPointCone7CaloJets = MidpointJetProducer {
        using MconeJetParameters
        double towerThreshold = 0.5       
        double coneRadius = 0.7
-       string src = "caloTowers"
+       InputTag src = caloTowers
        untracked string jetType = "CaloJet"
 }
