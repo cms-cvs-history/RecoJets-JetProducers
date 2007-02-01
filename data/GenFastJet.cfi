@@ -1,7 +1,7 @@
 module GenJetProducer = FastJetProducer {
         #Framework-settings:
         
-        InputTag src = genCandidates
+        InputTag src = genParticleCandidates
         untracked string jetType = "GenJet"
         
         #FastJetSettings
