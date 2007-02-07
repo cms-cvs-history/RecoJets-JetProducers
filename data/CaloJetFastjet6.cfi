@@ -1,0 +1,12 @@
+
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+
+module CaloJetFastjet6 = FastJetProducer {
+	using FastjetParameters
+        
+        double FJ_ktRParam = 0.6
+
+        InputTag src = caloTowers
+        untracked string jetType = "CaloJet"
+       untracked string alias = "FastKT6CaloJet"
+ }

@@ -1,0 +1,12 @@
+
+include "RecoJets/JetProducers/data/ExtKtJetParameters.cfi"
+
+module GenJetKt10 = ExtKtJetProducer {
+        using ExtKtJetParameters
+
+        double ExtKtRParam = 1.0
+        
+        InputTag src = genParticlesAllStable
+        untracked string jetType = "GenJet"
+        untracked string alias = "KT10GenJet"
+}	

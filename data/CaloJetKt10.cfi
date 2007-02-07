@@ -1,0 +1,13 @@
+
+include "RecoJets/JetProducers/data/ExtKtJetParameters.cfi"
+
+module CaloJetKt10 = ExtKtJetProducer {
+        using ExtKtJetParameters
+
+        double ExtKtRParam = 1.0
+        
+        InputTag src = caloTowers
+        untracked string jetType = "CaloJet"
+        untracked string alias = "KT10CaloJet"
+        untracked bool verbose = true
+}	

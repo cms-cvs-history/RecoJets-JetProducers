@@ -1,5 +1,5 @@
 # Iterative cone 0.5 GenJets
-# $Id: GenJetIcone5.cfi,v 1.4 2006/08/22 22:11:40 fedor Exp $
+# $Id: GenJetIcone5.cfi,v 1.5 2006/12/08 21:23:50 fedor Exp $
 
 include "RecoJets/JetProducers/data/IconeJetParameters.cfi"
 
@@ -8,6 +8,7 @@ module iterativeCone5GenJets = IterativeConeJetProducer {
        # Here tower threshold is particle Et threshold
        double towerThreshold = 0.0       
        double coneRadius = 0.5
-       InputTag src = genParticleCandidates
+       InputTag src = genParticlesAllStable
        untracked string jetType = "GenJet"
+        untracked string alias = "IC5GenJet"
 }

@@ -1,12 +1,7 @@
-module CaloFastJet = FastJetProducer {
-        #Framework-settings:
-        
-        InputTag src = caloTowers
-        string jetType = "CaloJet"
+# Standard kT jets parameters
+# $Id: KtJetParameters.cfi,v 1.2 2006/06/06 17:19:09 rharris Exp $
 
-        #FastJetSettings
-        double FJ_ktRParam = 1.0
-
+block FastjetParameters = {
         #possible JetFinder: "kt_algorithm", "cambridge_algorithm"
         string JetFinder = "kt_algorithm"
 
@@ -14,19 +9,18 @@ module CaloFastJet = FastJetProducer {
 	#setting either dcut or njets !=1 will switch to the respective exclusive mode
 	#Note: Setting both will result in inclusive mode
 	# Minimum energy for input:
-	double InputMinE=1;
+	double InputMinE = 1
 	#      PtMin is only used for inclusive mode
-	double PtMin = 1;
-	double dcut=-1;
-	int32 njets=-1;
+	double PtMin = 1
+	double dcut= -1
+	int32 njets= -1
 
         #possible Strategies: "Best","N2Plain","N2Tiled","N2MinHeapTiled","NlnN","NlnNCam"
         string Strategy = "Best"
 
 	#Do underlying Eventsubtraction (default: no);
 	string UE_Subtraction = "no"	
-	double Ghost_EtaMax=6
-	int32 Active_Area_Repeats=5
-	double GhostArea=0.01
- }
-
+	double Ghost_EtaMax = 6
+	int32 Active_Area_Repeats = 5
+	double GhostArea = 0.01
+}
