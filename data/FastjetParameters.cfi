@@ -1,5 +1,5 @@
 # Standard kT jets parameters
-# $Id: KtJetParameters.cfi,v 1.2 2006/06/06 17:19:09 rharris Exp $
+# $Id: FastjetParameters.cfi,v 1.1 2007/02/07 00:39:52 fedor Exp $
 
 block FastjetParameters = {
         #possible JetFinder: "kt_algorithm", "cambridge_algorithm"
@@ -8,8 +8,6 @@ block FastjetParameters = {
 	#possible Modes: inclusive, exclusive (dcut/njets), inclusive is default with PtMin [GeV]
 	#setting either dcut or njets !=1 will switch to the respective exclusive mode
 	#Note: Setting both will result in inclusive mode
-	# Minimum energy for input:
-	double InputMinE = 1
 	#      PtMin is only used for inclusive mode
 	double PtMin = 1
 	double dcut= -1

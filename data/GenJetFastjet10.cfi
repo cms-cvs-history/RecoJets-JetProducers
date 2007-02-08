@@ -1,12 +1,13 @@
 
 include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/GenJetParameters.cfi"
 
 module GenJetFastjet10 = FastJetProducer {
 	using FastjetParameters
+        using GenJetParameters
         
         double FJ_ktRParam = 1.0
-
-        InputTag src = genParticlesAllStable
-        untracked string jetType = "GenJet"
         untracked string alias = "FastKT10GenJet"
  }
+replace GenJetFastjet10.inputEtMin = 0.
+replace GenJetFastjet10.inputEMin = 1.
