@@ -9,5 +9,3 @@ module GenJetFastjet10 = FastJetProducer {
         double FJ_ktRParam = 1.0
         untracked string alias = "FastKT10GenJet"
  }
-replace GenJetFastjet10.inputEtMin = 0.
-replace GenJetFastjet10.inputEMin = 1.

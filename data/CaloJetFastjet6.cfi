@@ -10,4 +10,5 @@ module CaloJetFastjet6 = FastJetProducer {
        untracked string alias = "FastKT6CaloJet"
  }
  replace CaloJetFastjet6.inputEtMin = 0.
- replace CaloJetFastjet6.inputEMin = 1.
+// replace CaloJetFastjet6.inputEMin = 1.
+ replace CaloJetFastjet6.inputEMin = 5.
