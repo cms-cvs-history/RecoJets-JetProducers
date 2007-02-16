@@ -1,0 +1,63 @@
+# $Id: BasicJetIcone5.cfi,v 1.3 2007/02/08 01:46:11 fedor Exp $
+
+include "RecoJets/JetProducers/data/CaloJetParameters.cfi"
+include "RecoJets/JetProducers/data/IconeJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/ExtKtJetParameters.cfi"
+include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
+
+// regular jets (Et<0.5)
+
+module Fastjet10CaloJet = FastJetProducer {
+        untracked string alias = "KT10CaloJet"
+	using FastjetParameters
+        using CaloJetParameters
+        double FJ_ktRParam = 1.0
+ }
+
+module Fastjet6CaloJet = FastJetProducer {
+        untracked string alias = "KT6CaloJet"
+	using FastjetParameters
+        using CaloJetParameters
+        double FJ_ktRParam = 0.6
+ }
+
+module CaloJetKt10 = ExtKtJetProducer {
+        untracked string alias = "ExtKT10CaloJet"
+        using ExtKtJetParameters
+        using CaloJetParameters
+        double ExtKtRParam = 1.0
+}	
+
+module iterativeCone5CaloJet = IterativeConeJetProducer {
+       untracked string alias = "IC5CaloJet"
+       using IconeJetParameters
+       using CaloJetParameters
+       double coneRadius = 0.5
+}
+
+module midPointCone5CaloJet = MidpointJetProducer {
+       untracked string alias = "MC5CaloJet"
+       using MconeJetParameters
+       using CaloJetParameters
+       double coneRadius = 0.5       
+}
+
+module midPointCone7CaloJet = MidpointJetProducer {
+       untracked string alias = "MC7CaloJet"
+       using MconeJetParameters
+       using CaloJetParameters
+       double coneRadius = 0.7
+}
+
+// Comparison Jets
+
+module Fastjet10E1CaloJet = FastJetProducer {
+        untracked string alias = "KT10E1CaloJet"
+	using FastjetParameters
+        using CaloJetParameters
+        double FJ_ktRParam = 1.0
+ }
+ replace Fastjet10E1CaloJet.inputEtMin = 0.
+ replace Fastjet10E1CaloJet.inputEMin = 1.
+
