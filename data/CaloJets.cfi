@@ -1,4 +1,4 @@
-# $Id: BasicJetIcone5.cfi,v 1.3 2007/02/08 01:46:11 fedor Exp $
+# $Id: CaloJets.cfi,v 1.1 2007/02/16 23:25:08 fedor Exp $
 
 include "RecoJets/JetProducers/data/CaloJetParameters.cfi"
 include "RecoJets/JetProducers/data/IconeJetParameters.cfi"
@@ -22,7 +22,7 @@ module Fastjet6CaloJet = FastJetProducer {
         double FJ_ktRParam = 0.6
  }
 
-module CaloJetKt10 = ExtKtJetProducer {
+module Kt10CaloJet = ExtKtJetProducer {
         untracked string alias = "ExtKT10CaloJet"
         using ExtKtJetParameters
         using CaloJetParameters
