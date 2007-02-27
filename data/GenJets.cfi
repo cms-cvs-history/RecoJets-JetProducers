@@ -1,4 +1,4 @@
-# $Id: BasicJetIcone5.cfi,v 1.3 2007/02/08 01:46:11 fedor Exp $
+# $Id: GenJets.cfi,v 1.1 2007/02/16 23:25:08 fedor Exp $
 
 include "RecoJets/JetProducers/data/GenJetParameters.cfi"
 include "RecoJets/JetProducers/data/GenJetParametersNoNu.cfi"
@@ -9,42 +9,49 @@ include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
 
 // GenJets including neutrinos
 
-module Fastjet10GenJet = FastJetProducer {
+module Fastjet10GenJets = FastJetProducer {
         untracked string alias = "KT10GenJet"
 	using FastjetParameters
         using GenJetParameters
         double FJ_ktRParam = 1.0
  }
 
-module Fastjet6GenJet = FastJetProducer {
+module Fastjet6GenJets = FastJetProducer {
         untracked string alias = "KT6GenJet"
 	using FastjetParameters
         using GenJetParameters
         double FJ_ktRParam = 0.6
  }
 
-module Kt10GenJet = ExtKtJetProducer {
+module Kt10GenJets = ExtKtJetProducer {
         untracked string alias = "ExtKT10GenJet"
         using ExtKtJetParameters
         using GenJetParameters
         double ExtKtRParam = 1.0
 }	
 
-module iterativeCone5GenJet = IterativeConeJetProducer {
+module iterativeCone5GenJets = IterativeConeJetProducer {
        untracked string alias = "IC5GenJet"
        using IconeJetParameters
        using GenJetParameters
        double coneRadius = 0.5
 }
 
-module midPointCone5GenJet = MidpointJetProducer {
+module iterativeCone7GenJets = IterativeConeJetProducer {
+       untracked string alias = "IC7GenJet"
+       using IconeJetParameters
+       using GenJetParameters
+       double coneRadius = 0.7
+}
+
+module midPointCone5GenJets = MidpointJetProducer {
        untracked string alias = "MC5GenJet"
        using MconeJetParameters
        using GenJetParameters
        double coneRadius = 0.5       
 }
 
-module midPointCone7GenJet = MidpointJetProducer {
+module midPointCone7GenJets = MidpointJetProducer {
        untracked string alias = "MC7GenJet"
        using MconeJetParameters
        using GenJetParameters
@@ -53,42 +60,49 @@ module midPointCone7GenJet = MidpointJetProducer {
 
 // GenJets without neutrinos
 
-module Fastjet10GenJetNoNu = FastJetProducer {
+module Fastjet10GenJetsNoNu = FastJetProducer {
         untracked string alias = "KT10GenJetNoNu"
 	using FastjetParameters
         using GenJetParametersNoNu
         double FJ_ktRParam = 1.0
  }
 
-module Fastjet6GenJetNoNu = FastJetProducer {
+module Fastjet6GenJetsNoNu = FastJetProducer {
         untracked string alias = "KT6GenJetNoNu"
 	using FastjetParameters
         using GenJetParametersNoNu
         double FJ_ktRParam = 0.6
  }
 
-module Kt10GenJetNoNu = ExtKtJetProducer {
+module Kt10GenJetsNoNu = ExtKtJetProducer {
         untracked string alias = "ExtKT10GenJetNoNu"
         using ExtKtJetParameters
         using GenJetParametersNoNu
         double ExtKtRParam = 1.0
 }	
 
-module iterativeCone5GenJetNoNu = IterativeConeJetProducer {
+module iterativeCone5GenJetsNoNu = IterativeConeJetProducer {
        untracked string alias = "IC5GenJetNoNu"
        using IconeJetParameters
        using GenJetParametersNoNu
        double coneRadius = 0.5
 }
 
-module midPointCone5GenJetNoNu = MidpointJetProducer {
+module iterativeCone7GenJetsNoNu = IterativeConeJetProducer {
+       untracked string alias = "IC7GenJetNoNu"
+       using IconeJetParameters
+       using GenJetParametersNoNu
+       double coneRadius = 0.7
+}
+
+module midPointCone5GenJetsNoNu = MidpointJetProducer {
        untracked string alias = "MC5GenJetNoNu"
        using MconeJetParameters
        using GenJetParametersNoNu
        double coneRadius = 0.5       
 }
 
-module midPointCone7GenJetNoNu = MidpointJetProducer {
+module midPointCone7GenJetsNoNu = MidpointJetProducer {
        untracked string alias = "MC7GenJetNoNu"
        using MconeJetParameters
        using GenJetParametersNoNu
