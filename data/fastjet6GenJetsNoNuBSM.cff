@@ -1,0 +1,12 @@
+# $Id: GenJets.cfi,v 1.2 2007/02/27 22:09:11 fedor Exp $
+
+include "RecoJets/JetProducers/data/GenJetParametersNoNuBSM.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+
+module fastjet6GenJetsNoNuBSM = FastJetProducer {
+        untracked string alias = "KT6GenJetNoNuBSM"
+	using FastjetParameters
+        using GenJetParametersNoNuBSM
+        double FJ_ktRParam = 0.6
+        double PtMin = 0
+ }

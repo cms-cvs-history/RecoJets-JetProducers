@@ -1,0 +1,11 @@
+# $Id: GenJets.cfi,v 1.2 2007/02/27 22:09:11 fedor Exp $
+
+include "RecoJets/JetProducers/data/GenJetParameters.cfi"
+include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
+
+module midPointCone7GenJets = MidpointJetProducer {
+       untracked string alias = "MC7GenJet"
+       using MconeJetParameters
+       using GenJetParameters
+       double coneRadius = 0.7 
+}

@@ -1,0 +1,11 @@
+# $Id: GenJets.cfi,v 1.2 2007/02/27 22:09:11 fedor Exp $
+
+include "RecoJets/JetProducers/data/GenJetParameters.cfi"
+include "RecoJets/JetProducers/data/IconeJetParameters.cfi"
+
+module iterativeCone5GenJets = IterativeConeJetProducer {
+       untracked string alias = "IC5GenJet"
+       using IconeJetParameters
+       using GenJetParameters
+       double coneRadius = 0.5
+}
