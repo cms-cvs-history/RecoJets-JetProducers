@@ -1,0 +1,14 @@
+# $Id: fastjet6GenJets.cff,v 1.1 2007/05/17 23:56:46 fedor Exp $
+
+include "RecoJets/JetProducers/data/GenJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+
+module fastjet10E1GenJets = FastJetProducer {
+        untracked string alias = "KT10E1GenJet"
+	using FastjetParameters
+        using GenJetParameters
+        double FJ_ktRParam = 1.0
+        double PtMin = 0
+}
+ replace fastjet10E1GenJets.inputEtMin = 0.
+ replace fastjet10E1GenJets.inputEMin = 1.

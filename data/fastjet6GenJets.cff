@@ -1,4 +1,4 @@
-# $Id: GenJets.cfi,v 1.2 2007/02/27 22:09:11 fedor Exp $
+# $Id: fastjet6GenJets.cff,v 1.1 2007/05/17 23:56:46 fedor Exp $
 
 include "RecoJets/JetProducers/data/GenJetParameters.cfi"
 include "RecoJets/JetProducers/data/FastjetParameters.cfi"
@@ -10,3 +10,10 @@ module fastjet6GenJets = FastJetProducer {
         double FJ_ktRParam = 0.6
         double PtMin = 0
 }
+
+module fastjet6GenJetsPt10 = PtMinGenJetSelector {
+        InputTag src = fastjet6GenJets
+	double ptMin = 10.0
+}
+
+sequence fastjet6GenJetsPt10Seq = {fastjet6GenJets, fastjet6GenJetsPt10}
