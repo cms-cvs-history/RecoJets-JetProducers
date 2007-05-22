@@ -1,6 +1,6 @@
 // File: BasePilupSubtractionJetProducer.cc
 // Author: F.Ratnikov UMd Aug 22, 2006
-// $Id: BasePilupSubtractionJetProducer.cc,v 1.7 2007/05/04 23:23:02 fedor Exp $
+// $Id: BasePilupSubtractionJetProducer.cc,v 1.6 2007/05/04 11:59:55 kodolova Exp $
 //--------------------------------------------
 #include <memory>
 #include "DataFormats/Common/interface/EDProduct.h"
@@ -24,7 +24,6 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
-#include "DataFormats/Provenance/interface/Provenance.h"
 
 using namespace std;
 using namespace reco;
@@ -32,9 +31,6 @@ using namespace JetReco;
 
 namespace {
   const bool debug = false;
-  bool makeCaloJetPU (const string& fTag) {
-    return fTag == "CaloJetPileupSubtraction";
-  }
 
   bool makeCaloJet (const string& fTag) {
     return fTag == "CaloJet";
@@ -87,12 +83,10 @@ namespace cms
       mVerbose (conf.getUntrackedParameter<bool>("verbose", false)),
       mEtInputCut (conf.getParameter<double>("inputEtMin")),
       mEInputCut (conf.getParameter<double>("inputEMin")),
-      mEtJetInputCut (conf.getParameter<double>("inputEtJetMin")),
-      nSigmaPU (conf.getParameter<double>("nSigmaPU"))
+      mEtJetInputCut (conf.getParameter<double>("inputEtJetMin"))
   {
-    std::cout<<" Number of sigmas "<<nSigmaPU<<std::endl;
     std::string alias = conf.getUntrackedParameter<string>( "alias", conf.getParameter<std::string>("@module_label"));
-    if (makeCaloJetPU (mJetType)) produces<CaloJetCollection>().setBranchAlias (alias);
+    if (makeCaloJet (mJetType)) produces<CaloJetCollection>().setBranchAlias (alias);
     if (makeGenJet (mJetType)) produces<GenJetCollection>().setBranchAlias (alias);
     if (makeBasicJet (mJetType)) produces<BasicJetCollection>().setBranchAlias (alias);
     if (makeGenericJet (mJetType)) produces<GenericJetCollection>().setBranchAlias (alias);
@@ -111,19 +105,7 @@ namespace cms
   // Functions that gets called by framework every event
   void BasePilupSubtractionJetProducer::produce(edm::Event& e, const edm::EventSetup& fSetup)
   {
-//    std::cout<<"BasePilupSubtractionJetProducer::produce::start"<<std::endl;
     const CaloSubdetectorGeometry* towerGeometry = 0; // cache geometry
-    // Provenance
-/*
-  std::vector<edm::Provenance const*> theProvenance;
-  e.getAllProvenance(theProvenance);
-  for( std::vector<edm::Provenance const*>::const_iterator ip = theProvenance.begin();
-                                                      ip != theProvenance.end(); ip++)
-  {
-     cout<<" Print all module/label names "<<(**ip).moduleName()<<" "<<(**ip).moduleLabel()<<
-     " "<<(**ip).productInstanceName()<<endl;
-  }
-*/
     // get input
     InputCollection inputs; 
     edm::Handle<CandidateCollection> concreteInputs;
@@ -133,19 +115,18 @@ namespace cms
 //
 // Create the initial vector for Candidates
 //    
-//    std::cout<<" Before calculate pedestal "<<std::endl;
+
     calculate_pedestal(inputs); 
     std::vector<ProtoJet> output;
-//    std::cout<<" After calculate pedestal "<<std::endl;
+
     CandidateCollection inputTMPN = subtract_pedestal(inputs);
-//    std::cout<<" After pedestal subtraction "<<inputTMPN.size()<<std::endl;
+
 
 // create input for runAlgorithm
    JetReco::InputCollection fInput;
    FakeHandle handle (&inputTMPN, concreteInputs.id ());
-//   std::cout<<" After FakeHandle "<<std::endl;
    fillInputs (handle, &fInput);
-//   std::cout<<" After fill inputs "<<std::endl; 
+    
     // run algorithm
     vector <ProtoJet> firstoutput;
     runAlgorithm (fInput, &firstoutput);
@@ -213,7 +194,7 @@ namespace cms
     
     for (; protojetTMP != firstoutput.end (); protojetTMP++) {
     
-      if( (*protojetTMP).et() < mEtInputCut) continue;
+      if( (*protojetTMP).et() > mEtInputCut) continue;
       
       const ProtoJet::Constituents towers = (*protojetTMP).getTowerList();
       
@@ -221,25 +202,21 @@ namespace cms
       
       for(ProtoJet::Constituents::const_iterator ito = towers.begin(); ito != towers.end(); ito++)
       {
+//       double eta = (**ito).eta();
+//       int it = (*ietamap.find(eta)).second;
        int it = ieta(&(**ito));
-//       offset = offset + (*emean.find(it)).second + (*esigma.find(it)).second;
-// Temporarily for test       
-        double etnew = (**ito).et() - (*emean.find(it)).second - (*esigma.find(it)).second; 
-        if( etnew <0.) etnew = 0.;
-// 
-        offset = offset + etnew;
+       offset = offset + (*emean.find(it)).second + (*esigma.find(it)).second;
+       
+       
       }
-//      double mScale = ((*protojetTMP).et()-offset)/(*protojetTMP).et();
-// Temporarily for test only
-      double mScale = offset/(*protojetTMP).et();
-//////
+      double mScale = ((*protojetTMP).et()-offset)/(*protojetTMP).et();
       Jet::LorentzVector fP4((*protojetTMP).px()*mScale, (*protojetTMP).py()*mScale,
                             (*protojetTMP).pz()*mScale, (*protojetTMP).energy()*mScale);      
       
       
       ProtoJet pj(fP4, towers);
       output.push_back(pj);
-   }    
+    }    
     
     // produce output collection
     auto_ptr<CaloJetCollection> caloJets;
@@ -317,7 +294,7 @@ void BasePilupSubtractionJetProducer::calculate_pedestal(JetReco::InputCollectio
     for(int it = 0; it< itower; it++)
     {
        emean[it] = emean[it]/ntowers[it];
-       esigma[it] = nSigmaPU*sqrt(emean2[it]/ntowers[it] - emean[it]*emean[it]);
+       esigma[it] = sqrt(emean2[it]/ntowers[it] - emean[it]*emean[it]);
     }
 
 }
@@ -336,16 +313,16 @@ CandidateCollection BasePilupSubtractionJetProducer::subtract_pedestal(JetReco::
     
     for (JetReco::InputCollection::const_iterator input_object = inputs.begin (); input_object != inputs.end (); input_object++) {
          
+//       int it = (*ietamap.find((**input_object).eta())).second;
+//       if (makeCaloJet (mJetType)) it = dynamic_cast<const CaloTower*>(&(**input_object))->id().ieta();
        it = ieta(&(**input_object));
-       double etnew = (**input_object).et() - (*emean.find(it)).second - (*esigma.find(it)).second;
+       double etnew = (**input_object).et() - (*emean.find(it)).second -  (*esigma.find(it)).second;
        float mScale = etnew/(**input_object).et(); 
-// Temporarily //////
-       if(etnew < 0.) mScale = 0.;
-//////
+
        math::PtEtaPhiELorentzVector p4((**input_object).px()*mScale, (**input_object).py()*mScale,
                                          (**input_object).pz()*mScale, (**input_object).energy()*mScale);
-//       std::cout<<" CaloJet "<<makeCaloJetPU (mJetType)<<" "<<mJetType<<std::endl;
-       if (makeCaloJetPU (mJetType)) mycand = new RecoCaloTowerCandidate( 0, Candidate::LorentzVector( p4 ) );
+
+       if (makeCaloJet (mJetType)) mycand = new RecoCaloTowerCandidate( 0, Candidate::LorentzVector( p4 ) );
        inputCache.push_back (mycand);          
     }
     return inputCache;
@@ -353,20 +330,8 @@ CandidateCollection BasePilupSubtractionJetProducer::subtract_pedestal(JetReco::
 
 int BasePilupSubtractionJetProducer::ieta(const reco::Candidate* in)
 {
-//   std::cout<<" Start BasePilupSubtractionJetProducer::ieta "<<std::endl;
    int it = 0;
-   if (makeCaloJetPU (mJetType)) {
-//     std::cout<<" PU type "<<std::endl;
-     const RecoCaloTowerCandidate* ctc = dynamic_cast<const RecoCaloTowerCandidate*>(in);
-     if(ctc)
-     {
-          it = ctc->caloTower()->id().ieta(); 
-     } else
-     {
-          throw cms::Exception("Invalid Constituent") << "CaloJet constituent is not of RecoCandidate type";
-     }
-   }  
-//   std::cout<<" BasePilupSubtractionJetProducer::ieta "<<it<<std::endl; 
+   if (makeCaloJet (mJetType)) it = dynamic_cast<const CaloTower*>(in)->id().ieta();
    return it;
 }
 
