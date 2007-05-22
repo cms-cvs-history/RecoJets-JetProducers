@@ -1,4 +1,4 @@
-# $Id: fastjet6GenJetsNoNuBSM.cff,v 1.1 2007/05/17 23:56:46 fedor Exp $
+# $Id: fastjet10GenJetsNoNuBSM.cff,v 1.1 2007/05/19 04:20:09 fedor Exp $
 
 include "RecoJets/JetProducers/data/GenJetParametersNoNuBSM.cfi"
 include "RecoJets/JetProducers/data/FastjetParameters.cfi"
@@ -8,5 +8,5 @@ module fastjet10GenJetsNoNuBSM = FastJetProducer {
 	using FastjetParameters
         using GenJetParametersNoNuBSM
         double FJ_ktRParam = 1.0
-        double PtMin = 0
+        double PtMin = 1
  }
