@@ -1,6 +1,6 @@
 // File: BaseJetProducer.cc
 // Author: F.Ratnikov UMd Aug 22, 2006
-// $Id: BaseJetProducer.cc,v 1.8 2007/02/08 21:07:04 fedor Exp $
+// $Id: BaseJetProducer.cc,v 1.8.2.1 2007/04/04 20:20:16 fedor Exp $
 //--------------------------------------------
 #include <memory>
 
@@ -92,7 +92,7 @@ namespace cms
 
     // run algorithm
     if (input.empty ()) {
-      edm::LogWarning("Empty Event") << "empty input for jet algorithm: bypassing..." << std::endl;
+      edm::LogInfo("Empty Event") << "empty input for jet algorithm: bypassing..." << std::endl;
     }
     else {
       runAlgorithm (input, &output);
