@@ -3,8 +3,8 @@
       double HOThreshold = 1.1     // GeV, Scheme B
       double HESThreshold = 1.4    // GeV, Scheme B
       double HEDThreshold = 1.4    // GeV, Scheme B
-      double HF1Threshold = 0.5    // GeV, ORCA value
-      double HF2Threshold = 0.5    // GeV, ORCA value
+      double HF1Threshold = 1.2    // GeV, Oprimized on 10% occupancy
+      double HF2Threshold = 1.8    // GeV, Oprimized on 10% occupancy
       double EBThreshold = 0.09    // GeV, ORCA value w/o selective readout
       double EEThreshold = 0.45    // GeV, ORCA value w/o selective readout
       
