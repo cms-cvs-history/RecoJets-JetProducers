@@ -1,0 +1,16 @@
+# $Id: fastjet10E1CaloJets.cff,v 1.1 2007/05/19 04:20:09 fedor Exp $
+
+include "RecoJets/JetProducers/data/CaloJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/KtJetParameters.cfi"
+
+module kt10E1CaloJets = KtJetProducer {
+        untracked string alias = "KT10E1CaloJet"
+	using FastjetNoPU
+	using KtJetParameters
+        using CaloJetParameters
+        double FJ_ktRParam = 1.0
+        double JetPtMin = 1.
+ }
+ replace kt10E1CaloJets.inputEtMin = 0.
+ replace kt10E1CaloJets.inputEMin = 1.

@@ -1,0 +1,13 @@
+# $Id: midPointCone7CaloJets.cff,v 1.1 2007/05/17 23:56:46 fedor Exp $
+
+include "RecoJets/JetProducers/data/CaloJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/SISConeJetParameters.cfi"
+
+module sisCone7CaloJets = SISConeJetProducer {
+       untracked string alias = "SISC7CaloJet"
+       using FastjetNoPU
+       using SISConeJetParameters
+       using CaloJetParameters
+       double coneRadius = 0.7       
+}

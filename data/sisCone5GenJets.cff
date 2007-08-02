@@ -1,0 +1,20 @@
+# $Id: midPointCone5GenJets.cff,v 1.2 2007/05/19 04:20:09 fedor Exp $
+
+include "RecoJets/JetProducers/data/GenJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/SISConeJetParameters.cfi"
+
+module sisCone5GenJets = SISConeJetProducer {
+       untracked string alias = "SISC5GenJet"
+       using FastjetNoPU
+       using SISConeJetParameters
+       using GenJetParameters
+       double coneRadius = 0.5       
+}
+
+module sisCone5GenJetsPt10 = PtMinGenJetSelector {
+        InputTag src = sisCone5GenJets
+	double ptMin = 10.0
+}
+
+sequence sisCone5GenJetsPt10Seq = {sisCone5GenJets, sisCone5GenJetsPt10}

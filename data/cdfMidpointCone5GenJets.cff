@@ -1,0 +1,21 @@
+# $Id: cdfMidPointCone5GenJets.cff,v 1.1 2007/06/30 17:24:03 fedor Exp $
+
+include "RecoJets/JetProducers/data/GenJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
+
+module cdfMidpointCone5GenJets = CDFMidpointJetProducer {
+       untracked string alias = "MC5GenJet"
+       using FastjetNoPU
+       using MconeJetParameters
+       using GenJetParameters
+       double coneRadius = 0.5       
+       double JetPtMin = 0.
+}
+
+module cdfMidpointCone5GenJetsPt10 = PtMinGenJetSelector {
+        InputTag src = cdfMidpointCone5GenJets
+	double ptMin = 10.0
+}
+
+sequence cdfMidpointCone5GenJetsPt10Seq = {cdfMidpointCone5GenJets, cdfMidpointCone5GenJetsPt10}

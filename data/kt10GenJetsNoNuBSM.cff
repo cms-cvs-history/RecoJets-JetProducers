@@ -1,12 +1,14 @@
-# $Id: fastjet10GenJetsNoNuBSM.cff,v 1.1 2007/05/19 04:20:09 fedor Exp $
+# $Id: fastjet10GenJetsNoNuBSM.cff,v 1.2 2007/05/22 01:13:50 fedor Exp $
 
 include "RecoJets/JetProducers/data/GenJetParametersNoNuBSM.cfi"
 include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/KtJetParameters.cfi"
 
-module fastjet10GenJetsNoNuBSM = FastJetProducer {
+module kt10GenJetsNoNuBSM = KtJetProducer {
         untracked string alias = "KT10GenJetNoNuBSM"
-	using FastjetParameters
+	using FastjetNoPU
+	using KtJetParameters
         using GenJetParametersNoNuBSM
         double FJ_ktRParam = 1.0
-        double PtMin = 1
+        double JetPtMin = 1
  }
