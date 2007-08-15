@@ -11,6 +11,6 @@ block FastjetNoPU = {
 block FastjetWithPU = {
 	string UE_Subtraction = "yes"	
 	double Ghost_EtaMax = 6
-	int32 Active_Area_Repeats = 1
-	double GhostArea = 0.1
+	int32 Active_Area_Repeats = 5
+	double GhostArea = 0.01
 }
