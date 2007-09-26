@@ -1,12 +1,10 @@
-# $Id: midPointCone7GenJetsNoNuBSM.cff,v 1.1 2007/05/17 23:56:46 fedor Exp $
+# $Id: midPointCone5GenJetsNoNuBSM.cff,v 1.1 2007/05/17 23:56:46 fedor Exp $
 
 include "RecoJets/JetProducers/data/GenJetParametersNoNuBSM.cfi"
-include "RecoJets/JetProducers/data/FastjetParameters.cfi"
 include "RecoJets/JetProducers/data/SISConeJetParameters.cfi"
 
 module sisCone7GenJetsNoNuBSM = SISConeJetProducer {
        untracked string alias = "SISC7GenJetNoNuBSM"
-       using FastjetNoPU
        using SISConeJetParameters
        using GenJetParametersNoNuBSM
        double coneRadius = 0.7       
