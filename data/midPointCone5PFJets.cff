@@ -1,0 +1,11 @@
+# $Id: midPointCone5CaloJets.cff,v 1.1 2007/05/17 23:56:46 fedor Exp $
+
+include "RecoJets/JetProducers/data/PFJetParameters.cfi"
+include "RecoJets/JetProducers/data/MconeJetParameters.cfi"
+
+module midPointCone5PFJets = MidpointJetProducer {
+       untracked string alias = "MC5PFJet"
+       using MconeJetParameters
+       using PFJetParameters
+       double coneRadius = 0.5       
+}

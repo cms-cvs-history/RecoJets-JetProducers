@@ -1,0 +1,10 @@
+# Standard PFlowJets parameters
+# Joanna Weng
+
+block PFJetParameters = {
+	double inputEtMin = 0.5
+	double inputEMin = 0.
+        InputTag src =  particleFlow
+        untracked string jetType = "PFJet"
+        untracked bool verbose = false
+}
