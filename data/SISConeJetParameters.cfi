@@ -1,5 +1,5 @@
 # Standard SISCone jets parameters
-# $Id: FastjetParameters.cfi,v 1.3 2007/05/17 23:56:45 fedor Exp $
+# $Id: SISConeJetParameters.cfi,v 1.1 2007/08/02 21:58:22 fedor Exp $
 
 block SISConeJetParameters = {
        double coneOverlapThreshold = 0.75
@@ -7,5 +7,5 @@ block SISConeJetParameters = {
        int32 maxPasses = 0
        double protojetPtMin = 0.
        bool caching = false
-       double JetPtMin = 0.
+       double JetPtMin = 1.
 }

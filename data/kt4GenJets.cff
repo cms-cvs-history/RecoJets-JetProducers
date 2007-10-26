@@ -1,0 +1,21 @@
+# $Id: kt4GenJets.cff,v 1.1 2007/08/02 21:58:23 fedor Exp $
+
+include "RecoJets/JetProducers/data/GenJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/KtJetParameters.cfi"
+
+module kt4GenJets = KtJetProducer {
+        untracked string alias = "KT4GenJet"
+	using FastjetNoPU
+	using KtJetParameters
+        using GenJetParameters
+        double FJ_ktRParam = 0.4
+        double JetPtMin = 1
+}
+
+module kt4GenJetsPt10 = PtMinGenJetSelector {
+        InputTag src = kt4GenJets
+	double ptMin = 10.0
+}
+
+sequence kt4GenJetsPt10Seq = {kt4GenJets, kt4GenJetsPt10}

@@ -1,0 +1,15 @@
+# $Id: kt4CaloJets.cff,v 1.1 2007/08/02 21:58:23 fedor Exp $
+
+include "RecoJets/JetProducers/data/CaloJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
+include "RecoJets/JetProducers/data/KtJetParameters.cfi"
+
+module kt4CaloJets = KtJetProducer {
+        untracked string alias = "KT4CaloJet"
+	using FastjetNoPU
+	using KtJetParameters
+        using CaloJetParameters
+        double FJ_ktRParam = 0.4
+        double JetPtMin = 1
+ }
+
