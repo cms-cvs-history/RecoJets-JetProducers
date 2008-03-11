@@ -1,9 +1,10 @@
 # Standard CalooJets parameters
-# $Id: GenJetParameters.cfi,v 1.1 2007/02/08 01:46:11 fedor Exp $
+# $Id: GenJetParameters.cfi,v 1.2 2008/03/06 00:55:35 fedor Exp $
 
 block GenJetParameters = {
 	double inputEtMin = 0.
 	double inputEMin = 0.
+        double jetPtMin = 5.
         InputTag src = genParticlesForJets
         untracked string jetType = "GenJet"
         untracked bool verbose = false
