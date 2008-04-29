@@ -26,4 +26,15 @@
       InputTag hfInput = hfreco
       VInputTag ecalInputs = { ecalRecHit:EcalRecHitsEB, ecalRecHit:EcalRecHitsEE }
       untracked bool AllowMissingInputs = false
+
+      /// Method for momentum reconstruction
+      int32 MomConstrMethod = 0
+      /// Depth, fraction of the respective calorimeter [0,1]
+      double MomEmDepth = 0
+      ///
+      double MomHadDepth = 0
+      ///
+      double MomTotDepth = 0
+      
+      
    }
