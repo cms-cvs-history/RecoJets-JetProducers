@@ -1,5 +1,5 @@
 # Standard CalooJets parameters
-# $Id: CaloJetPileupSubtractionParameters.cfi,v 1.2 2007/05/21 08:26:10 kodolova Exp $
+# $Id: CaloJetPileupSubtractionParameters.cfi,v 1.3 2007/06/01 07:37:40 kodolova Exp $
 
 block CaloJetPileupSubtractionParameters = {
 	double inputEtMin = 0.5
@@ -7,7 +7,7 @@ block CaloJetPileupSubtractionParameters = {
 	double inputEtJetMin = 10.
         double nSigmaPU = 1.
         double radiusPU = 0.5
-        InputTag src = caloTowers
+        InputTag src = towerMaker
         untracked string jetType = "CaloJetPileupSubtraction"
         untracked bool verbose = false
 }
