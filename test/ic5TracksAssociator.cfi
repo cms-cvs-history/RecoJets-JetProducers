@@ -1,5 +1,0 @@
- module ic5JetToTracksAssociator = JetToTracksAssociator {
-       InputTag tracks = ctfWithMaterialTracks
-       InputTag jets   = iterativeCone5CaloJets
-       double coneSize = 0.5
-     }
