@@ -47,37 +47,76 @@ SubEventGenJetProducer::SubEventGenJetProducer(edm::ParameterSet const& conf):
 
 void SubEventGenJetProducer::inputTowers( ) 
 {
+
+   cout<<"A"<<endl;
    std::vector<edm::Ptr<reco::Candidate> >::const_iterator inBegin = inputs_.begin(),
       inEnd = inputs_.end(), i = inBegin;
+
+   cout<<"B"<<endl;
+
    for (; i != inEnd; ++i ) {
       reco::CandidatePtr input = inputs_[i - inBegin];
+      cout<<"1"<<endl;
+
+      if(input.isNull()) cout<<"Holy s. Pointer is Nul!!!!"<<endl;
+
+
       if (isnan(input->pt()))           continue;
+
+      cout<<"A1"<<endl;
+
+
       if (input->et()    <inputEtMin_)  continue;
+
+      cout<<"A2"<<endl;
+
       if (input->energy()<inputEMin_)   continue;
+
+      cout<<"A3"<<endl;
+
       if (isAnomalousTower(input))      continue;
 
+
+      cout<<"2"<<endl;
+
       edm::Ptr<reco::Candidate> p = inputs_[i - inBegin];
+      cout<<"3"<<endl;
+
       const GenParticle * pref = dynamic_cast<const GenParticle *>(p.get());
+      cout<<"4"<<endl;
+
       int subevent = pref->collisionId();
       LogDebug("SubEventContainers")<<"SubEvent is : "<<subevent<<endl;
       LogDebug("SubEventContainers")<<"SubSize is : "<<subInputs_.size()<<endl;
+      cout<<"5"<<endl;
 
       if(subevent >= (int)subInputs_.size()){ 
+	 cout<<"6"<<endl;
+
 	 hydroTag_.resize(subevent+1, -1);
+
+	 cout<<"7"<<endl;
          subInputs_.resize(subevent+1);
+	 cout<<"8"<<endl;
+
       LogDebug("SubEventContainers")<<"SubSize is : "<<subInputs_.size()<<endl;
       LogDebug("SubEventContainers")<<"HydroTagSize is : "<<hydroTag_.size()<<endl;
       }
+      cout<<"9"<<endl;
 
       LogDebug("SubEventContainers")<<"HydroTag is : "<<hydroTag_[subevent]<<endl;
       if(hydroTag_[subevent] != 0) hydroTag_[subevent] = (int)checkHydro(pref);
+      cout<<"10"<<endl;
 
       subInputs_[subevent].push_back(fastjet::PseudoJet(input->px(),input->py(),input->pz(),
 						input->energy()));
 
+      cout<<"11"<<endl;
       subInputs_[subevent].back().set_user_index(i - inBegin);
+      cout<<"12"<<endl;
 
    }
+   cout<<"C"<<endl;
 
 }
 
