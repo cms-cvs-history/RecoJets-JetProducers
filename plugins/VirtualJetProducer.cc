@@ -224,6 +224,12 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
     if (pvCollection->size()>0) vertex_=pvCollection->begin()->position();
   }
 
+  // For Pileup subtraction using offset correction:
+  // set up geometry map
+  if ( doPUOffsetCorr_ ) {
+     subtractor_->setupGeometryMap(iEvent, iSetup);
+  }
+
   // clear data
   LogDebug("VirtualJetProducer") << "Clear data\n";
   fjInputs_.clear();
