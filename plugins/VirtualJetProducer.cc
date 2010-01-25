@@ -294,7 +294,7 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
     cout<<"fjInputs_ "<<fjInputs_.size()<<endl;
     cout<<"fjJets_ "<<fjJets_.size()<<endl;
     
-    subtractor_->offsetCorrectJets(orphanInput);
+    subtractor_->offsetCorrectJets();
     cout<<"inputs_ "<<inputs_.size()<<endl;
     cout<<"fjInputs_ "<<fjInputs_.size()<<endl;
     cout<<"fjJets_ "<<fjJets_.size()<<endl;
@@ -387,7 +387,6 @@ VirtualJetProducer::getConstituents(const vector<fastjet::PseudoJet>&fjConstitue
   return result;
 }
 
-
 void VirtualJetProducer::output(edm::Event & iEvent, edm::EventSetup const& iSetup)
 {
   // Write jets and constitutents. Will use fjJets_, inputs_
@@ -457,7 +456,12 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
 		  constituents, iSetup);
     
     jet.setJetArea (jetArea);
-    jet.setPileup (0.0);
+
+    if(doPUOffsetCorr_){
+       jet.setPileup(subtractor_->getPileUpEnergy(ijet));
+   }else{
+       jet.setPileup (0.0);
+    }
 
     // add to the list
     jets->push_back(jet);	
