@@ -178,9 +178,8 @@ protected:
   std::vector<fastjet::PseudoJet> fjInputs_;        // fastjet inputs
   std::vector<fastjet::PseudoJet> fjJets_;          // fastjet jets
 
-  std::string           jetCollInstanceName_;       // instance name for output jet collection
-
-  PileUpSubtractor               *subtractor_;
+  std::string                     jetCollInstanceName_;       // instance name for output jet collection
+  boost::shared_ptr<PileUpSubtractor>  subtractor_;
 
 };
 

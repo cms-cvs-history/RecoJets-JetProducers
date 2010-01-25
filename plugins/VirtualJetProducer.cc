@@ -168,7 +168,7 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
      if ( jetTypeE != JetType::CaloJet ) {
 	throw cms::Exception("InvalidInput") << "Can only offset correct jets of type CaloJet";
      }
-     subtractor_ = new PileUpSubtractor(iConfig,inputs_,fjInputs_,fjJets_);
+     subtractor_ = boost::shared_ptr<PileUpSubtractor>(new PileUpSubtractor(iConfig,inputs_,fjInputs_,fjJets_));
   }
 
   // do fasjet area / rho calcluation? => accept corresponding parameters
