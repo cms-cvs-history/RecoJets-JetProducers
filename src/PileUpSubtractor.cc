@@ -219,10 +219,6 @@ void PileUpSubtractor::calculateOrphanInput(vector<fastjet::PseudoJet> & orphanI
   for (; pseudojetTMP != fjJetsEnd ; ++pseudojetTMP) {
 
     vector<fastjet::PseudoJet> newtowers;
-      
-    // get eta, phi of this jet
-    double eta2 = pseudojetTMP->eta();
-    double phi2 = pseudojetTMP->phi();
     // find towers within radiusPU_ of this jet
     for(vector<HcalDetId>::const_iterator im = allgeomid_.begin(); im != allgeomid_.end(); im++)
       {
