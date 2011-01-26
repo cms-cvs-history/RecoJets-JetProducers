@@ -6,7 +6,7 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 # input
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10))
 process.source = cms.Source(
     "PoolSource",
     fileNames = cms.untracked.vstring(
@@ -34,6 +34,7 @@ process.output.outputCommands.append('keep recoBasicJets_*_*_*')
 process.output.outputCommands.append('keep *_*_*_JETRECO')
 process.output.outputCommands.append('keep *_trackRefsForJets_*_*')
 process.output.outputCommands.append('keep *_pfclusterRefsForJets_*_*')
+process.output.outputCommands.append('keep *_particleFlowClusterHCAL_*_*')
 process.output.outputCommands.append('keep *_generalTracks_*_*')
 
 # jet reconstruction
