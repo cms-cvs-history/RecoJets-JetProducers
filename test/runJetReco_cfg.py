@@ -10,14 +10,10 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
 process.source = cms.Source(
     "PoolSource",
     fileNames = cms.untracked.vstring(
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/0410E3D4-F5CB-DE11-A871-001D09F242EA.root',
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/482F295C-F7CB-DE11-9C53-0030487A18A4.root',
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/64775AFD-F7CB-DE11-9305-001D09F24DA8.root',
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/64AC12F9-FFCB-DE11-AB45-0030487A322E.root',
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/74E50396-F6CB-DE11-A6F4-0030487A322E.root',
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/8AC096C6-F6CB-DE11-A494-0030487D0D3A.root',
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/C0821C7D-F9CB-DE11-9209-001D09F253D4.root',
-'/store/relval/CMSSW_3_4_0_pre5/RelValQCD_FlatPt_15_3000/GEN-SIM-RECO/MC_3XY_V12-v1/0002/C21534FF-F7CB-DE11-A43B-001D09F2423B.root'
+'/store/relval/CMSSW_3_11_0_pre5/RelValTTbar/GEN-SIM-RECO/START311_V0-v1/0063/08A4DD4C-E223-E011-A7E1-002354EF3BE0.root',
+'/store/relval/CMSSW_3_11_0_pre5/RelValTTbar/GEN-SIM-RECO/START311_V0-v1/0063/58EB762D-DB23-E011-8A24-001A92971B94.root',
+'/store/relval/CMSSW_3_11_0_pre5/RelValTTbar/GEN-SIM-RECO/START311_V0-v1/0063/5A86074E-DD23-E011-8027-001A92971B94.root',
+'/store/relval/CMSSW_3_11_0_pre5/RelValTTbar/GEN-SIM-RECO/START311_V0-v1/0063/7436AFAB-DB23-E011-8A03-002618943927.root',
 
         )
     )
@@ -32,17 +28,19 @@ process.output = cms.OutputModule(
 process.output.outputCommands =  cms.untracked.vstring('drop *')
 process.output.outputCommands.append('keep recoCaloJets_*_*_*')
 process.output.outputCommands.append('keep recoPFJets_*_*_*')
+process.output.outputCommands.append('keep recoPFClusterJets_*_*_*')
 process.output.outputCommands.append('keep recoGenJets_*_*_*')
 process.output.outputCommands.append('keep recoBasicJets_*_*_*')
 process.output.outputCommands.append('keep *_*_*_JETRECO')
 process.output.outputCommands.append('keep *_trackRefsForJets_*_*')
+process.output.outputCommands.append('keep *_pfclusterRefsForJets_*_*')
 process.output.outputCommands.append('keep *_generalTracks_*_*')
 
 # jet reconstruction
 process.load('Configuration.StandardSequences.Geometry_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = 'MC_3XY_V12::All'
+process.GlobalTag.globaltag = 'MC_311_V0::All'
 
 
 from RecoJets.JetProducers.CaloJetParameters_cfi import *
@@ -54,6 +52,7 @@ process.load('RecoJets.Configuration.GenJetParticles_cff')
 process.load('RecoJets.Configuration.RecoGenJets_cff')
 process.load('RecoJets.Configuration.RecoJets_cff')
 process.load('RecoJets.Configuration.RecoPFJets_cff')
+process.load('RecoJets.Configuration.RecoPFClusterJets_cff')
 process.load('RecoJets.JetProducers.TracksForJets_cff')
 process.load('RecoJets.Configuration.RecoTrackJets_cff')
 process.load('RecoJets.Configuration.JetIDProducers_cff')
@@ -66,6 +65,7 @@ process.load('RecoJets.Configuration.JetIDProducers_cff')
 process.recoJets = cms.Path(process.genParticlesForJets+process.recoGenJets+
                             process.recoJets+
                             process.recoPFJets+
+                            process.recoPFClusterJets+
                             process.recoTrackJets+
                             process.recoJetIds
                             )
@@ -73,6 +73,7 @@ process.recoJets = cms.Path(process.genParticlesForJets+process.recoGenJets+
 process.recoAllJets = cms.Path(process.genParticlesForJets+process.recoAllGenJets+
                                process.recoAllJets+
                                process.recoAllPFJets+
+                               process.recoAllPFClusterJets+
                                process.recoAllTrackJets+
                                process.recoAllJetIds
                                )
