@@ -13,7 +13,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
-#include "FWCore/Utilities/interface/CodedException.h"
+#include "FWCore/Utilities/interface/Exception.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
@@ -330,6 +330,10 @@ void VirtualJetProducer::inputTowers( )
     if (input->et()    <inputEtMin_)  continue;
     if (input->energy()<inputEMin_)   continue;
     if (isAnomalousTower(input))      continue;
+    if (input->pt() == 0) {
+      edm::LogError("NullTransverseMomentum") << "dropping input candidate with pt=0";
+      continue;
+    }
     if (makeCaloJet(jetTypeE)&&doPVCorrection_) {
       const CaloTower* tower=dynamic_cast<const CaloTower*>(input.get());
       math::PtEtaPhiMLorentzVector ct(tower->p4(vertex_));
