@@ -119,7 +119,6 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
   , maxInputs_(99999999)
   , doAreaFastjet_ (iConfig.getParameter<bool>         ("doAreaFastjet"))
   , doAreaDiskApprox_       (false)
-  , doOutputJets_           (true)
   , doRhoFastjet_  (iConfig.getParameter<bool>         ("doRhoFastjet"))
   , voronoiRfact_           (-9)
   , doPUOffsetCorr_(iConfig.getParameter<bool>         ("doPUOffsetCorr"))
@@ -195,9 +194,6 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
       throw cms::Exception("Conflicting area calculations") << "Both the calculation of jet area via fastjet and via an analytical disk approximation have been requested. Please decide on one.\n";
 
   }
-  // turn off jet collection output for speed
-  if (iConfig.exists("doOutputJets"))
-    doOutputJets_     = iConfig.getParameter<bool>("doOutputJets");
   // Voronoi-based area calculation allows for an empirical scale factor
   if (iConfig.exists("voronoiRfact"))
     voronoiRfact_     = iConfig.getParameter<double>("voronoiRfact");
@@ -229,8 +225,7 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
   string alias=iConfig.getUntrackedParameter<string>("alias",moduleLabel_);
 
   // make the "produces" statements
-  if ( doOutputJets_ )
-    makeProduces( alias, jetCollInstanceName_ );
+  makeProduces( alias, jetCollInstanceName_ );
 
   doFastJetNonUniform_ = false;
   if(iConfig.exists("doFastJetNonUniform")) doFastJetNonUniform_ = iConfig.getParameter<bool>   ("doFastJetNonUniform");
@@ -293,7 +288,7 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
 
   // For Pileup subtraction using offset correction:
   // set up geometry map
-  if ( !doOutputJets_ && doPUOffsetCorr_ ) {
+  if ( doPUOffsetCorr_ ) {
      subtractor_->setupGeometryMap(iEvent, iSetup);
   }
 
@@ -320,7 +315,7 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
 
   // For Pileup subtraction using offset correction:
   // Subtract pedestal. 
-  if ( !doOutputJets_ && doPUOffsetCorr_ ) {
+  if ( doPUOffsetCorr_ ) {
      subtractor_->reset(inputs_,fjInputs_,fjJets_);
      subtractor_->calculatePedestal(fjInputs_); 
      subtractor_->subtractPedestal(fjInputs_);    
@@ -330,7 +325,7 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
   // Run algorithm. Will modify fjJets_ and allocate fjClusterSeq_. 
   // This will use fjInputs_
   runAlgorithm( iEvent, iSetup );
-  if ( !doOutputJets_ && doPUOffsetCorr_ ) {
+  if ( doPUOffsetCorr_ ) {
      subtractor_->setAlgorithm(fjClusterSeq_);
   }
 
@@ -512,8 +507,6 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
     }
   } // doRhoFastjet_
 
-  if (!doOutputJets_)  return;   // the rest are not required if jets don't need to be output
-    
   // produce output jet collection
 
   using namespace reco;
