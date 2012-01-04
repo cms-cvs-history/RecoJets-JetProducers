@@ -211,8 +211,10 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
     int    activeAreaRepeats = iConfig.getParameter<int> ("Active_Area_Repeats");
     // default GhostArea 0.01
     double ghostArea = iConfig.getParameter<double> ("GhostArea");
-    if (voronoiRfact_ <= 0)
+    if (voronoiRfact_ <= 0) {
       fjActiveArea_     = ActiveAreaSpecPtr(new fastjet::ActiveAreaSpec(ghostEtaMax,activeAreaRepeats,ghostArea));
+      fjActiveArea_->set_fj2_placement(true);
+    }
     fjRangeDef_ = RangeDefPtr( new fastjet::RangeDefinition(rhoEtaMax) );
   } 
 

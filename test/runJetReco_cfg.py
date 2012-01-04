@@ -6,7 +6,7 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 # input
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.source = cms.Source(
     "PoolSource",
     fileNames = cms.untracked.vstring(
@@ -45,14 +45,19 @@ process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.Geometry_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = 'START311_V1::All'
+process.GlobalTag.globaltag = 'START42_V12::All'
 
 process.load("RecoJets/Configuration/RecoPFClusterJets_cff")
 
 process.load("RecoJets/JetAssociationProducers/trackExtrapolator_cfi")
 
+#process.kt6PFJets.voronoiRfact = cms.double(0.9)
+
 #process.recoJets = cms.Path(process.trackExtrapolator+process.jetGlobalReco+process.CastorFullReco+process.jetHighLevelReco+process.recoPFClusterJets)
 process.recoJets = cms.Path(process.trackExtrapolator+process.jetGlobalReco+process.CastorFullReco+process.jetHighLevelReco+process.recoPFClusterJets)
+
+
+
 
 process.out = cms.EndPath(process.output)
 
