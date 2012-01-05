@@ -527,18 +527,15 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
     // get the fastjet jet
     const fastjet::PseudoJet& fjJet = fjJets_[ijet];
     // get the constituents from fastjet
-    std::vector<fastjet::PseudoJet> fjConstituents =
-      sorted_by_pt(fjClusterSeq_->constituents(fjJet));
+    std::vector<fastjet::PseudoJet> fjConstituents = fastjet::sorted_by_pt(fjJet.constituents());
     // convert them to CandidatePtr vector
     std::vector<CandidatePtr> constituents =
       getConstituents(fjConstituents);
 
     // calcuate the jet area
     double jetArea=0.0;
-    if ( doAreaFastjet_ ) {
-      fastjet::ClusterSequenceAreaBase const * clusterSequenceWithArea =
-        dynamic_cast<fastjet::ClusterSequenceAreaBase const *>(&*fjClusterSeq_);
-      jetArea = clusterSequenceWithArea->area(fjJet);
+    if ( doAreaFastjet_ && fjJet.has_area() ) {
+      jetArea = fjJet.area();
     }
     else if ( doAreaDiskApprox_ ) {
       // Here it is assumed that fjJets_ is in decreasing order of pT, 
