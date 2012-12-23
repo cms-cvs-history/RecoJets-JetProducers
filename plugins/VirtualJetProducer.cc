@@ -81,12 +81,6 @@ VirtualJetProducer::JetType::byName(const string &name)
 
 void VirtualJetProducer::makeProduces( std::string alias, std::string tag ) 
 {
-
-
-  if ( writeCompound_ ) {
-    produces<reco::BasicJetCollection>();
-  }
-
   if (makeCaloJet(jetTypeE)) {
     produces<reco::CaloJetCollection>(tag).setBranchAlias(alias);
   }
@@ -126,7 +120,6 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
   , restrictInputs_(false)
   , maxInputs_(99999999)
   , doAreaFastjet_ (iConfig.getParameter<bool>         ("doAreaFastjet"))
-  , useExplicitGhosts_(false)
   , doAreaDiskApprox_       (false)
   , doRhoFastjet_  (iConfig.getParameter<bool>         ("doRhoFastjet"))
   , voronoiRfact_           (-9)
@@ -134,7 +127,6 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
   , puWidth_(0)
   , nExclude_(0)
   , jetCollInstanceName_ ("")
-  , writeCompound_ ( false )
 {
   anomalousTowerDef_ = std::auto_ptr<AnomalousTower>(new AnomalousTower(iConfig));
 
@@ -197,11 +189,6 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
      }
   }
 
-  // use explicit ghosts in the fastjet clustering sequence?
-  if ( iConfig.exists("useExplicitGhosts") ) {
-    useExplicitGhosts_ = iConfig.getParameter<bool>("useExplicitGhosts");
-  }
-
   // do approximate disk-based area calculation => warn if conflicting request
   if (iConfig.exists("doAreaDiskApprox")) {
     doAreaDiskApprox_ = iConfig.getParameter<bool>("doAreaDiskApprox");
@@ -226,15 +213,8 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
     int    activeAreaRepeats = iConfig.getParameter<int> ("Active_Area_Repeats");
     // default GhostArea 0.01
     double ghostArea = iConfig.getParameter<double> ("GhostArea");
-    if (voronoiRfact_ <= 0) {
-      fjActiveArea_     = ActiveAreaSpecPtr(new fastjet::GhostedAreaSpec(ghostEtaMax,activeAreaRepeats,ghostArea));
-      fjActiveArea_->set_fj2_placement(true);
-      if ( ! useExplicitGhosts_ ) {
-	fjAreaDefinition_ = AreaDefinitionPtr( new fastjet::AreaDefinition(fastjet::active_area, *fjActiveArea_ ) );
-      } else {
-	fjAreaDefinition_ = AreaDefinitionPtr( new fastjet::AreaDefinition(fastjet::active_area_explicit_ghosts, *fjActiveArea_ ) );
-      }
-    }
+    if (voronoiRfact_ <= 0)
+      fjActiveArea_     = ActiveAreaSpecPtr(new fastjet::ActiveAreaSpec(ghostEtaMax,activeAreaRepeats,ghostArea));
     fjRangeDef_ = RangeDefPtr( new fastjet::RangeDefinition(rhoEtaMax) );
   } 
 
@@ -246,13 +226,6 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
  
 
   string alias=iConfig.getUntrackedParameter<string>("alias",moduleLabel_);
-
-
-  // Check to see if we are writing compound jets for substructure
-  // and jet grooming
-  if ( iConfig.exists("writeCompound") ) {
-    writeCompound_ = iConfig.getParameter<bool>("writeCompound");
-  }
 
   // make the "produces" statements
   makeProduces( alias, jetCollInstanceName_ );
@@ -272,12 +245,10 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
     minSeed_ =              iConfig.getParameter<unsigned int>("minSeed");
   }
 
-
   produces<std::vector<double> >("rhos");
   produces<std::vector<double> >("sigmas");
   produces<double>("rho");
   produces<double>("sigma");
-
   
 }
 
@@ -332,18 +303,9 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
   
   // get inputs and convert them to the fastjet format (fastjet::PeudoJet)
   edm::Handle<reco::CandidateView> inputsHandle;
-  edm::Handle< std::vector<edm::FwdPtr<reco::Candidate> > > inputsHandleAsFwdPtr; 
-  
-  bool isView = iEvent.getByLabel(src_,inputsHandle);
-  if ( isView ) {
-    for (size_t i = 0; i < inputsHandle->size(); ++i) {
-      inputs_.push_back(inputsHandle->ptrAt(i));
-    }
-  } else {
-    iEvent.getByLabel(src_,inputsHandleAsFwdPtr);
-    for (size_t i = 0; i < inputsHandleAsFwdPtr->size(); ++i) {
-      inputs_.push_back( (*inputsHandleAsFwdPtr)[i].ptr() );
-    }    
+  iEvent.getByLabel(src_,inputsHandle);
+  for (size_t i = 0; i < inputsHandle->size(); ++i) {
+    inputs_.push_back(inputsHandle->ptrAt(i));
   }
   LogDebug("VirtualJetProducer") << "Got inputs\n";
   
@@ -357,19 +319,19 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
   // For Pileup subtraction using offset correction:
   // Subtract pedestal. 
   if ( doPUOffsetCorr_ ) {
-     subtractor_->setDefinition(fjJetDefinition_);
      subtractor_->reset(inputs_,fjInputs_,fjJets_);
      subtractor_->calculatePedestal(fjInputs_); 
      subtractor_->subtractPedestal(fjInputs_);    
      LogDebug("VirtualJetProducer") << "Subtracted pedestal\n";
   }
+
   // Run algorithm. Will modify fjJets_ and allocate fjClusterSeq_. 
   // This will use fjInputs_
   runAlgorithm( iEvent, iSetup );
 
-  // if ( doPUOffsetCorr_ ) {
-  //    subtractor_->setAlgorithm(fjClusterSeq_);
-  // }
+  if ( doPUOffsetCorr_ ) {
+     subtractor_->setAlgorithm(fjClusterSeq_);
+  }
 
   LogDebug("VirtualJetProducer") << "Ran algorithm\n";
   // For Pileup subtraction using offset correction:
@@ -385,6 +347,7 @@ void VirtualJetProducer::produce(edm::Event& iEvent,const edm::EventSetup& iSetu
     subtractor_->calculatePedestal(orphanInput);
     subtractor_->offsetCorrectJets();
   }
+
   // Write the output jets.
   // This will (by default) call the member function template
   // "writeJets", but can be overridden. 
@@ -457,11 +420,8 @@ bool VirtualJetProducer::isAnomalousTower(reco::CandidatePtr input)
 void VirtualJetProducer::copyConstituents(const vector<fastjet::PseudoJet>& fjConstituents,
                                           reco::Jet* jet)
 {
-  for (unsigned int i=0;i<fjConstituents.size();++i) { 
-    int index = fjConstituents[i].user_index();
-    if ( index >= 0 && static_cast<unsigned int>(index) < inputs_.size() )
-      jet->addDaughter(inputs_[index]);
-  }
+  for (unsigned int i=0;i<fjConstituents.size();++i)
+    jet->addDaughter(inputs_[fjConstituents[i].user_index()]);
 }
 
 
@@ -472,10 +432,8 @@ VirtualJetProducer::getConstituents(const vector<fastjet::PseudoJet>&fjConstitue
   vector<reco::CandidatePtr> result;
   for (unsigned int i=0;i<fjConstituents.size();i++) {
     int index = fjConstituents[i].user_index();
-    if ( index >= 0 && static_cast<unsigned int>(index) < inputs_.size() ) {
-      reco::CandidatePtr candidate = inputs_[index];
-      result.push_back(candidate);
-    }
+    reco::CandidatePtr candidate = inputs_[index];
+    result.push_back(candidate);
   }
   return result;
 }
@@ -487,51 +445,29 @@ void VirtualJetProducer::output(edm::Event & iEvent, edm::EventSetup const& iSet
 {
   // Write jets and constitutents. Will use fjJets_, inputs_
   // and fjClusterSeq_
-
-  if ( !writeCompound_ ) {
-    switch( jetTypeE ) {
-    case JetType::CaloJet :
-      writeJets<reco::CaloJet>( iEvent, iSetup);
-      break;
-    case JetType::PFJet :
-      writeJets<reco::PFJet>( iEvent, iSetup);
-      break;
-    case JetType::GenJet :
-      writeJets<reco::GenJet>( iEvent, iSetup);
-      break;
-    case JetType::TrackJet :
-      writeJets<reco::TrackJet>( iEvent, iSetup);
-      break;
-    case JetType::PFClusterJet :
-      writeJets<reco::PFClusterJet>( iEvent, iSetup);
-      break;
-    case JetType::BasicJet :
-      writeJets<reco::BasicJet>( iEvent, iSetup);
-      break;
-    default:
-      throw cms::Exception("InvalidInput") << "invalid jet type in VirtualJetProducer\n";
-      break;
-    };
-  } else {
-    // Write jets and constitutents.
-    switch( jetTypeE ) {
-    case JetType::CaloJet :
-      writeCompoundJets<reco::CaloJet>( iEvent, iSetup );
-      break;
-    case JetType::PFJet :
-      writeCompoundJets<reco::PFJet>( iEvent, iSetup );
-      break;
-    case JetType::GenJet :
-      writeCompoundJets<reco::GenJet>( iEvent, iSetup );
-      break;
-    case JetType::BasicJet :
-      writeCompoundJets<reco::BasicJet>( iEvent, iSetup );
-      break;
-    default:
-      throw cms::Exception("InvalidInput") << "invalid jet type in CompoundJetProducer\n";
-      break;
-    };
-  }
+  switch( jetTypeE ) {
+  case JetType::CaloJet :
+    writeJets<reco::CaloJet>( iEvent, iSetup);
+    break;
+  case JetType::PFJet :
+    writeJets<reco::PFJet>( iEvent, iSetup);
+    break;
+  case JetType::GenJet :
+    writeJets<reco::GenJet>( iEvent, iSetup);
+    break;
+  case JetType::TrackJet :
+    writeJets<reco::TrackJet>( iEvent, iSetup);
+    break;
+  case JetType::PFClusterJet :
+    writeJets<reco::PFClusterJet>( iEvent, iSetup);
+    break;
+  case JetType::BasicJet :
+    writeJets<reco::BasicJet>( iEvent, iSetup);
+    break;
+  default:
+    throw cms::Exception("InvalidInput") << "invalid jet type in VirtualJetProducer\n";
+    break;
+  };
   
 }
 
@@ -599,6 +535,7 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
   std::auto_ptr<std::vector<T> > jets(new std::vector<T>() );
   jets->reserve(fjJets_.size());
   
+
   // Distance between jet centers -- for disk-based area calculation
   std::vector<std::vector<double> >   rij(fjJets_.size());
 
@@ -607,17 +544,13 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
     T jet;
     // get the fastjet jet
     const fastjet::PseudoJet& fjJet = fjJets_[ijet];
-    // get the constituents from fastjet
-    std::vector<fastjet::PseudoJet> fjConstituents = fastjet::sorted_by_pt(fjJet.constituents());
-    // convert them to CandidatePtr vector
-    std::vector<CandidatePtr> constituents =
-      getConstituents(fjConstituents);
-
 
     // calcuate the jet area
     double jetArea=0.0;
-    if ( doAreaFastjet_ && fjJet.has_area() ) {
-      jetArea = fjJet.area();
+    if ( doAreaFastjet_ ) {
+      fastjet::ClusterSequenceAreaBase const * clusterSequenceWithArea =
+        dynamic_cast<fastjet::ClusterSequenceAreaBase const *>(&*fjClusterSeq_);
+      jetArea = clusterSequenceWithArea->area(fjJet);
     }
     else if ( doAreaDiskApprox_ ) {
       // Here it is assumed that fjJets_ is in decreasing order of pT, 
@@ -637,6 +570,14 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
       jetArea  *= rParam_;
       jetArea  *= rParam_;
     }  
+    
+    // get the constituents from fastjet
+    std::vector<fastjet::PseudoJet> fjConstituents =
+      sorted_by_pt(fjClusterSeq_->constituents(fjJet));
+    // convert them to CandidatePtr vector
+    std::vector<CandidatePtr> constituents =
+      getConstituents(fjConstituents);
+
     // write the specifics to the jet (simultaneously sets 4-vector, vertex).
     // These are overridden functions that will call the appropriate
     // specific allocator. 
@@ -659,6 +600,7 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
     // add to the list
     jets->push_back(jet);        
   }
+  
   // put the jets in the collection
   iEvent.put(jets,jetCollInstanceName_);
   
@@ -667,108 +609,3 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
 
 
 
-/// function template to write out the outputs
-template< class T>
-void VirtualJetProducer::writeCompoundJets(  edm::Event & iEvent, edm::EventSetup const& iSetup)
-{
-
-  // get a list of output jets
-  std::auto_ptr<reco::BasicJetCollection>  jetCollection( new reco::BasicJetCollection() );
-  // get a list of output subjets
-  std::auto_ptr<std::vector<T> >  subjetCollection( new std::vector<T>() );
-
-  // This will store the handle for the subjets after we write them
-  edm::OrphanHandle< std::vector<T> > subjetHandleAfterPut;
-  // this is the mapping of subjet to hard jet
-  std::vector< std::vector<int> > indices;
-  // this is the list of hardjet 4-momenta
-  std::vector<math::XYZTLorentzVector> p4_hardJets;
-  // this is the hardjet areas
-  std::vector<double> area_hardJets;
-
-
-  // Loop over the hard jets
-  std::vector<fastjet::PseudoJet>::const_iterator it = fjJets_.begin(),
-    iEnd = fjJets_.end(),
-    iBegin = fjJets_.begin();
-  indices.resize( fjJets_.size() );
-  for ( ; it != iEnd; ++it ) {
-    fastjet::PseudoJet const & localJet = *it;
-    unsigned int jetIndex = it - iBegin;
-    // Get the 4-vector for the hard jet
-    p4_hardJets.push_back( math::XYZTLorentzVector(localJet.px(), localJet.py(), localJet.pz(), localJet.e() ));
-    double localJetArea = 0.0;
-    if ( doAreaFastjet_ && localJet.has_area() ) {
-      localJetArea = localJet.area();
-    }
-    area_hardJets.push_back( localJetArea );
-
-    // create the subjet list
-    std::vector<fastjet::PseudoJet> constituents;
-    if ( it->has_pieces() ) {
-      constituents = it->pieces();
-    } else {
-      constituents=it->constituents();
-    }
-
-    
-    std::vector<fastjet::PseudoJet>::const_iterator itSubJetBegin = constituents.begin(),
-      itSubJet = itSubJetBegin, itSubJetEnd = constituents.end();
-    for (; itSubJet != itSubJetEnd; ++itSubJet ){
-
-      fastjet::PseudoJet const & subjet = *itSubJet;      
-
-      math::XYZTLorentzVector p4Subjet(subjet.px(), subjet.py(), subjet.pz(), subjet.e() );
-      reco::Particle::Point point(0,0,0);
-
-      // This will hold ptr's to the subjets
-      std::vector<reco::CandidatePtr> subjetConstituents;
-
-      // Get the transient subjet constituents from fastjet
-      std::vector<fastjet::PseudoJet> subjetFastjetConstituents = subjet.constituents();
-      std::vector<reco::CandidatePtr> constituents =
-	getConstituents(subjetFastjetConstituents );    
-
-      indices[jetIndex].push_back( subjetCollection->size() );
-
-      // Add the concrete subjet type to the subjet list to write to event record
-      T jet;
-      reco::writeSpecific( jet, p4Subjet, point, constituents, iSetup);
-      double subjetArea = 0.0;
-      if ( doAreaFastjet_ && itSubJet->has_area() ){
-	subjetArea = itSubJet->area();
-      }
-      jet.setJetArea( subjetArea );
-      subjetCollection->push_back( jet );
-
-    }
-  }
-  // put subjets into event record
-  subjetHandleAfterPut = iEvent.put( subjetCollection, jetCollInstanceName_ );
-  
-  
-  // Now create the hard jets with ptr's to the subjets as constituents
-  std::vector<math::XYZTLorentzVector>::const_iterator ip4 = p4_hardJets.begin(),
-    ip4Begin = p4_hardJets.begin(),
-    ip4End = p4_hardJets.end();
-
-  for ( ; ip4 != ip4End; ++ip4 ) {
-    int p4_index = ip4 - ip4Begin;
-    std::vector<int> & ind = indices[p4_index];
-    std::vector<reco::CandidatePtr> i_hardJetConstituents;
-    // Add the subjets to the hard jet
-    for( std::vector<int>::const_iterator isub = ind.begin();
-	 isub != ind.end(); ++isub ) {
-      reco::CandidatePtr candPtr( subjetHandleAfterPut, *isub, false );
-      i_hardJetConstituents.push_back( candPtr );
-    }   
-    reco::Particle::Point point(0,0,0);
-    reco::BasicJet toput( *ip4, point, i_hardJetConstituents);
-    toput.setJetArea( area_hardJets[ip4 - ip4Begin] );
-    jetCollection->push_back( toput );
-  }
-  
-  // put hard jets into event record
-  iEvent.put( jetCollection);
-
-}
