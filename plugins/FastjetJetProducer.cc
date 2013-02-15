@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "RecoJets/JetProducers/plugins/FastjetJetProducer.h"
+#include "RecoJets/JetProducers/interface/BackgroundEstimator.h"
 
 #include "RecoJets/JetProducers/interface/JetSpecific.h"
 
@@ -198,6 +199,8 @@ void FastjetJetProducer::produceTrackJets( edm::Event & iEvent, const edm::Event
     for (reco::VertexCollection::const_iterator itVtx = pvCollection->begin(); itVtx != pvCollection->end(); ++itVtx) {
       if (itVtx->isFake() || itVtx->ndof() < minVtxNdof_ || fabs(itVtx->z()) > maxVtxZ_) continue;
 
+      cout<<"Vertex : "<<itVtx->z()<<endl;
+
       // clear the intermediate containers
       inputs_.clear();
       fjInputs_.clear();
@@ -207,6 +210,8 @@ void FastjetJetProducer::produceTrackJets( edm::Event & iEvent, const edm::Event
       if (useOnlyVertexTracks_) {
         // loop over the tracks associated to the vertex
         for (reco::Vertex::trackRef_iterator itTr = itVtx->tracks_begin(); itTr != itVtx->tracks_end(); ++itTr) {
+
+	  cout<<"track to vertex"<<endl;
           // whether a match was found in the track candidate input
           bool found = false;
           // loop over input track candidates
@@ -270,6 +275,8 @@ void FastjetJetProducer::produceTrackJets( edm::Event & iEvent, const edm::Event
 
       // convert our jets and add to the overall jet vector
       for (unsigned int ijet=0;ijet<fjJets_.size();++ijet) {
+
+	cout<<"jet : "<<ijet<<"   pt : "<<fjJets_[ijet].eta()<<"      eta :"<<fjJets_[ijet].perp()<<endl;
         // get the constituents from fastjet
         std::vector<fastjet::PseudoJet> fjConstituents = sorted_by_pt(fjClusterSeq_->constituents(fjJets_[ijet]));
         // convert them to CandidatePtr vector
@@ -293,6 +300,49 @@ void FastjetJetProducer::produceTrackJets( edm::Event & iEvent, const edm::Event
     // put the jets in the collection
     LogDebug("FastjetTrackJetProducer") << "Put " << jets->size() << " jets in the event.\n";
     iEvent.put(jets);
+
+    cout<<"TRACKJET WRITING..."<<endl;
+    if (doRhoFastjet_) {
+
+      cout<<"doing RHO"<<endl;
+      std::vector<fastjet::PseudoJet> fjexcluded_jets;
+      fjexcluded_jets=fjJets_;
+
+      if(fjexcluded_jets.size()>2) fjexcluded_jets.resize(nExclude_);
+
+      if(doFastJetNonUniform_){
+	cout<<"doing NON-uniform"<<endl;
+
+	std::auto_ptr<std::vector<double> > rhos(new std::vector<double>);
+	std::auto_ptr<std::vector<double> > sigmas(new std::vector<double>);
+	int nEta = puCenters_.size();
+	rhos->reserve(nEta);
+	sigmas->reserve(nEta);
+	fastjet::ClusterSequenceAreaBase const* clusterSequenceWithArea =
+	  dynamic_cast<fastjet::ClusterSequenceAreaBase const *> ( &*fjClusterSeq_ );
+
+
+	for(int ie = 0; ie < nEta; ++ie){
+
+	  cout<<"filling eta : "<<ie<<endl;
+
+	  double eta = puCenters_[ie];
+	  double etamin=eta-puWidth_;
+	  double etamax=eta+puWidth_;
+	  fastjet::RangeDefinition range_rho(etamin,etamax);
+	  fastjet::BackgroundEstimator bkgestim(*clusterSequenceWithArea,range_rho);
+	  bkgestim.set_excluded_jets(fjexcluded_jets);
+	  rhos->push_back(bkgestim.rho());
+	  sigmas->push_back(bkgestim.sigma());
+	}
+
+	cout<<"putting RHO "<<endl;
+
+	iEvent.put(rhos,"rhos");
+	iEvent.put(sigmas,"sigmas");
+      }
+    }
+
 
 }
 
