@@ -259,12 +259,9 @@ VirtualJetProducer::VirtualJetProducer(const edm::ParameterSet& iConfig)
 
   doFastJetNonUniform_ = false;
   if(iConfig.exists("doFastJetNonUniform")){
-    cout<<"it does EXIST!"<<endl;
     doFastJetNonUniform_ = iConfig.getParameter<bool>   ("doFastJetNonUniform");
   }
   if(doFastJetNonUniform_){
-
-    cout<<"yes, really non-uniform"<<endl;
     puCenters_ = iConfig.getParameter<std::vector<double> >("puCenters");
     puWidth_ = iConfig.getParameter<double>("puWidth");
     nExclude_ = iConfig.getParameter<unsigned int>("nExclude");
@@ -496,7 +493,6 @@ void VirtualJetProducer::output(edm::Event & iEvent, edm::EventSetup const& iSet
       writeJets<reco::GenJet>( iEvent, iSetup);
       break;
     case JetType::TrackJet :
-      cout<<"writing track jets"<<endl;
       writeJets<reco::TrackJet>( iEvent, iSetup);
       break;
     case JetType::PFClusterJet :
@@ -536,10 +532,7 @@ template< typename T >
 void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& iSetup )
 {
 
-  cout<<"WRITING..."<<endl;
   if (doRhoFastjet_) {
-
-    cout<<"doing RHO"<<endl;
     // declare jet collection without the two jets, 
     // for unbiased background estimation.
     std::vector<fastjet::PseudoJet> fjexcluded_jets;
@@ -548,8 +541,6 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
     if(fjexcluded_jets.size()>2) fjexcluded_jets.resize(nExclude_);
     
     if(doFastJetNonUniform_){
-      cout<<"doing NON-uniform"<<endl;
-
       std::auto_ptr<std::vector<double> > rhos(new std::vector<double>);
       std::auto_ptr<std::vector<double> > sigmas(new std::vector<double>);
       int nEta = puCenters_.size();
@@ -558,10 +549,7 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
       fastjet::ClusterSequenceAreaBase const* clusterSequenceWithArea =
         dynamic_cast<fastjet::ClusterSequenceAreaBase const *> ( &*fjClusterSeq_ );
 
-      
       for(int ie = 0; ie < nEta; ++ie){
-
-	cout<<"filling eta : "<<ie<<endl;
 
         double eta = puCenters_[ie];
         double etamin=eta-puWidth_;
@@ -572,8 +560,6 @@ void VirtualJetProducer::writeJets( edm::Event & iEvent, edm::EventSetup const& 
         rhos->push_back(bkgestim.rho());
         sigmas->push_back(bkgestim.sigma());
       }
-
-      cout<<"putting RHO "<<endl;
 
       iEvent.put(rhos,"rhos");
       iEvent.put(sigmas,"sigmas");
